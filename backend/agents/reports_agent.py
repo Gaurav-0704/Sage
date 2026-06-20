@@ -1,9 +1,9 @@
 """
-Reports Agent — v0.3. Owner-only.
+Reports Agent — v0.4. Owner-only.
 """
 
 from datetime import date, timedelta
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 
@@ -117,6 +117,70 @@ def monthly(months: int = 12,
         e = float(exp.get(key, 0) or 0)
         out.append(schemas.MonthlyReportRow(month=key, collected=c, expense=e, net=c - e))
     return out
+
+
+@router.get("/at-risk", response_model=list[schemas.AtRiskStudent])
+def at_risk(
+    min_due: float = Query(1000, description="Minimum outstanding due (INR)"),
+    days_without_payment: int = Query(30, description="Days since last payment"),
+    limit: int = Query(50, le=200),
+    db: Session = Depends(get_db),
+    _owner: models.User = Depends(require_owner),
+):
+    """
+    Students with outstanding dues and no recent payment activity.
+    Risk score 0-100 based on due amount and payment inactivity.
+    """
+    today = date.today()
+    cutoff = today - timedelta(days=days_without_payment)
+
+    students = db.query(models.Student).filter(models.Student.status == "active").all()
+    results = []
+
+    for s in students:
+        total_billed = sum(f.total_fee for f in s.fees) + (s.last_year_dues or 0)
+        total_paid   = sum(p.amount for p in s.payments)
+        due          = max(0.0, total_billed - total_paid)
+
+        if due < min_due:
+            continue
+
+        last_pay_date = max((p.date for p in s.payments), default=None)
+        days_since = (today - last_pay_date).days if last_pay_date else 999
+
+        if days_since < days_without_payment:
+            continue
+
+        # Risk score: combines due magnitude and payment gap
+        due_score  = min(50, int(due / 1000))          # up to 50 pts for amount
+        days_score = min(50, int(days_since / 6))      # up to 50 pts for inactivity
+        score      = min(100, due_score + days_score)
+
+        if score >= 75:
+            level = "critical"
+        elif score >= 50:
+            level = "high"
+        elif score >= 25:
+            level = "medium"
+        else:
+            level = "low"
+
+        results.append(schemas.AtRiskStudent(
+            id=s.id,
+            admission_no=s.admission_no,
+            name=s.name,
+            student_class=s.student_class,
+            section=s.section,
+            parent_name=s.parent_name,
+            phone=s.phone,
+            due=round(due, 2),
+            days_since_payment=days_since if last_pay_date else None,
+            risk_score=score,
+            risk_level=level,
+        ))
+
+    results.sort(key=lambda r: r.risk_score, reverse=True)
+    return results[:limit]
 
 
 @router.get("/yearly", response_model=list[schemas.YearlyReport])

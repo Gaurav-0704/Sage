@@ -1,274 +1,129 @@
-# Nagarjuna High School ERP
+# Sage — AI-Powered School ERP
 
-A complete school management system for K–10. Single codebase, four sign-in
-roles, runs locally with one command, mobile-friendly UI, and uses CSV
-files as the editable source of truth so the data stays portable.
+> A school management system where the admin controls an AI assistant that **proposes** changes and **waits for human approval** before anything runs.
 
-Built with FastAPI on the backend and React on the frontend, organised as
-a small ecosystem of independent agents — one for each job (students,
-fees, finance, exams, and so on). The agents share a database but never
-import each other, so each one can be edited or replaced without
-disturbing the rest.
-
-> Originally built as an end-to-end full-stack project. See
-> [DOCUMENTATION.md](./DOCUMENTATION.md) for the full guidebook covering
-> architecture, calculations, and the design decisions behind each piece.
+Sage is not a CRUD app with a chatbot bolted on. The AI assistant is the primary interface for the owner — it reads school data, surfaces proactive insights, and proposes precise actions. Nothing executes until the owner reviews and approves each one individually.
 
 ---
 
-## What it can do
+## What makes it different
 
-**For the school owner**
-- A live dashboard with student totals, fees collected, expenses, cash
-  and bank balances — all computed from the underlying transactions, no
-  stored balances to drift out of sync.
-- Manage students, teachers, fee structures, payments, and expenses.
-- Print Bonafide certificates, Transfer Certificates and exam memos
-  from a dedicated Records page (formal A4 layouts, browser-print).
-- Approve new staff and teacher signups.
-- Read every system action in the audit log.
-- Run a self-check scanner that reports any database, import, or lint
-  problems — runs every night and on demand.
-- Talk to an in-built assistant in plain English that proposes changes
-  and only applies the ones the owner approves.
+### 1. Human-in-the-loop AI Assistant
+Ask in plain English. Claude proposes exact actions (create student, record payment, apply fee structure). Each action is shown as a reviewable card — you can skip individual ones, edit the parameters inline, or apply all. Destructive actions require an extra confirmation.
 
-**For the front office (cashier role)**
-- A POS-style tile dashboard with one tap per fee head.
-- Tap a tile, pick the student and amount, and the printable receipt
-  pops up automatically.
-- A simple class-wise student roster (names + class only — no Aadhaar,
-  no admission number, no money information).
+### 2. Proactive AI Insights
+Every night at 2 AM (and on demand), the system analyses school data and surfaces specific, actionable observations:
+- Students with high dues and no payment in 60+ days
+- Expense spikes vs prior months
+- Fee collection rate by class
+- At-risk students before board exams
 
-**For teachers**
-- Their own dashboard, their classes, their assignments.
-- Owner can grant front-office access so a teacher can also collect fees.
+### 3. Full Audit Trail
+Every state-changing action (POST, PUT, DELETE, PATCH) is automatically logged — who did it, what changed, when, from which IP. Searchable and filterable.
 
-**For students**
-- A personal dashboard showing the latest exam score, upcoming
-  assignments, and the next exam date.
-- Subject-wise marks, class-rank comparisons, and a small mind games
-  page (memory match, math blitz, reaction time) for the fun bit.
+### 4. Nightly Self-Diagnostics
+A scanner agent checks DB health, imports all agent modules, and optionally runs `ruff` lint at 2 AM. Findings are sent to the owner as notifications. On-demand runs available.
 
-**Across the board**
-- Sign-up flow with role picker and owner approval queue.
-- Forgot password with email-delivered six-digit code.
-- Two-way CSV sync — open `data/seed_students.csv` in Excel, edit it,
-  upload it, the database merges. Edit a student in the UI and the CSV
-  rewrites itself. Same for teachers.
-- Printable receipt for every payment and expense.
-- Mobile layout with a hamburger menu, tested on iOS Safari and
-  Android Chrome.
-- Warm semi-dark UI with a polished theme.
+### 5. Fee Risk Scoring
+Rule-based at-risk detection — students with dues above threshold and no recent payment surface on the dashboard with a risk score. No fake ML, real operational value.
 
 ---
 
-## Quick start
+## Stack
 
-You'll need Python 3.13 and Node.js 18 or newer.
-
-```
-git clone <this-repo>
-cd "NHS App"
-py run.py
-```
-
-That's it. The launcher creates a Python virtual environment, installs
-backend dependencies, runs `npm install` for the frontend if needed,
-then starts both servers and streams their output:
-
-```
-api  → http://127.0.0.1:8000   (Swagger docs at /docs)
-web  → http://localhost:3000
-```
-
-On Windows you can also double-click `start.bat` instead.
-
-To populate the database with 300 sample students, twelve sample
-teachers, fee structures, exams, marks, and student logins:
-
-```
-py tools/seed_demo.py
-```
-
-Demo accounts:
-
-| Role     | Email                                | Password    |
-|----------|--------------------------------------|-------------|
-| Owner    | owner@nagarjuna.school               | owner123    |
-| Staff    | staff@nagarjuna.school               | staff123    |
-| Teacher  | sunita.iyer@nagarjuna.school         | teacher123  |
-| Student  | nhs0001@nagarjuna.school             | student123  |
+| Layer | Technology |
+|-------|-----------|
+| Backend | Python · FastAPI · SQLAlchemy · SQLite |
+| Frontend | React · Recharts · Axios |
+| AI | Anthropic Claude API (tool use + streaming) |
+| Auth | JWT · bcrypt |
+| Infra | Docker Compose |
 
 ---
 
-## Architecture at a glance
+## Run locally
 
-```
-                ┌────────────────────────────────────────┐
-                │  React frontend (one app, four sidebars) │
-                │  Sign-in → role-aware dashboard          │
-                └─────────────────┬──────────────────────┘
-                                  │ JSON over HTTP
-                                  │ JWT in Authorization header
-                ┌─────────────────┴──────────────────────┐
-                │  FastAPI gateway                       │
-                │  - audit middleware records every write│
-                │  - CORS for the dev server             │
-                │  - mounts every agent router           │
-                └─────────────────┬──────────────────────┘
-                                  │
-        ┌──────┬──────┬───────────┼───────────┬───────┬───────┐
-        ▼      ▼      ▼           ▼           ▼       ▼       ▼
-      auth  students fees        finance   expenses  reports tiles
-                          ────────┼────────
-                          ▼               ▼
-                       exams           teachers ─── assignments
-                                          │
-                                          ▼
-                          teacher_self     student_self
-                          ────────┼────────
-                                  ▼
-                          audit, scanner, ai, records
+### Prerequisites
+- Python 3.11+
+- Node 18+
+- An [Anthropic API key](https://console.anthropic.com)
 
-                     SQLite (single school.db file)
+### 1. Backend
+
+```bash
+cd backend
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+cp ../.env.example .env    # add your ANTHROPIC_API_KEY
+uvicorn main:app --reload
 ```
 
-Sixteen agents, one job each. The pipeline is the same every time:
+Backend runs at http://localhost:8000. Default credentials:
+- Owner: `owner@nagarjuna.school` / `owner123`
+- Staff: `staff@nagarjuna.school` / `staff123`
 
-1. The user signs in. The auth agent issues a JWT carrying the user id
-   and role.
-2. The frontend stores the token and includes it on every request.
-3. A FastAPI dependency reads the token, looks up the user, and rejects
-   any request that doesn't have the right role for the endpoint.
-4. The endpoint reads or writes the database via SQLAlchemy.
-5. A middleware records the request in the audit log.
-6. If the change touched a student or teacher record, a separate sync
-   helper rewrites the corresponding CSV file on disk.
+### 2. Frontend
 
-For everything else, see [DOCUMENTATION.md](./DOCUMENTATION.md).
+```bash
+cd frontend
+npm install
+npm start
+```
+
+Frontend runs at http://localhost:3000.
+
+### 3. Or use Docker Compose
+
+```bash
+cp .env.example .env   # add your ANTHROPIC_API_KEY
+docker compose up --build
+```
 
 ---
 
-## Tech stack
+## Architecture
 
-| Layer       | Tool                               | Why                                       |
-|-------------|------------------------------------|-------------------------------------------|
-| Backend     | Python 3.13, FastAPI, SQLAlchemy   | Fast to build, typed, async-ready         |
-| Database    | SQLite (single file)               | Zero setup, easy backup, fits a single school |
-| Auth        | JWT (python-jose) + bcrypt         | Standard, widely audited                  |
-| Frontend    | React 19 + React Router            | Mature, familiar to most developers       |
-| Charts      | Recharts                           | Lightweight, declarative                  |
-| Styling     | Hand-written CSS variables         | No framework lock-in, easy to theme       |
-| Launcher    | Custom Python script               | One command spins up both servers         |
-| Optional AI | Anthropic Claude (via REST)        | Plain HTTP, no SDK dependency             |
+The backend is decomposed into **16 agents**, each owning one domain:
 
-No build step needed for the backend. The frontend uses Create React App
-for hot reload during development.
+```
+auth · students · fees · finance · expenses · reports
+tiles · exams · teachers · assignments
+teacher_self · student_self
+audit · scanner · ai · records
+```
+
+Each agent is a self-contained FastAPI router mounted in `main.py`. The `AuditMiddleware` intercepts every mutating request and writes a human-readable log entry. The `ScannerAgent` schedules itself with `asyncio` on startup.
+
+The AI agent uses Claude's **tool use** API — it never executes tools directly. It returns proposed tool calls as JSON; the `/ai/execute` endpoint runs only the owner-approved subset.
+
+---
+
+## Running Tests
+
+```bash
+cd backend
+pytest tests/ -v
+```
 
 ---
 
 ## Project structure
 
 ```
-NHS App/
-├── README.md             ← you are here
-├── DOCUMENTATION.md      ← full guidebook
-├── LICENSE               ← CC BY-NC-SA 4.0
-├── run.py                ← single-command launcher
-├── start.bat             ← Windows double-click launcher
-├── backend/              ← FastAPI service
-│   ├── main.py
-│   ├── models.py
-│   ├── schemas.py
-│   ├── auth.py
-│   ├── dependencies.py
-│   ├── audit_middleware.py
-│   ├── csv_sync.py
-│   ├── notifications.py
-│   ├── school_constants.py
-│   ├── requirements.txt
-│   └── agents/
-│       ├── auth_agent.py        ← sign in, sign up, password reset
-│       ├── students_agent.py    ← students CRUD + CSV
-│       ├── teachers_agent.py    ← teachers CRUD + CSV
-│       ├── fees_agent.py        ← fee structures, bills, payments, receipt
-│       ├── expenses_agent.py    ← expenses + voucher receipt
-│       ├── finance_agent.py     ← live cash + bank
-│       ├── reports_agent.py     ← dashboard, daily / monthly / yearly
-│       ├── tiles_agent.py       ← configurable POS tiles
-│       ├── exams_agent.py       ← exams + marks + per-student perf
-│       ├── assignments_agent.py ← assignments per class/subject
-│       ├── teacher_self_agent.py ← /teacher/me views
-│       ├── student_self_agent.py ← /student/me views
-│       ├── audit_agent.py       ← read-side of audit log
-│       ├── scanner_agent.py     ← nightly self-check
-│       ├── ai_agent.py          ← optional Claude assistant
-│       └── records_agent.py     ← Bonafide / TC / Memo printing + master CSV
-├── frontend/             ← React app
-│   ├── package.json
-│   ├── public/
+sage/
+├── backend/
+│   ├── agents/          # 16 domain agents (each = one FastAPI router)
+│   ├── tests/           # pytest suite — financial logic + smoke tests
+│   ├── main.py          # mounts all agents + middleware
+│   ├── models.py        # SQLAlchemy ORM
+│   ├── schemas.py       # Pydantic I/O schemas
+│   ├── auth.py          # JWT + bcrypt
+│   └── audit_middleware.py
+├── frontend/
 │   └── src/
-│       ├── App.js
-│       ├── api.js
-│       ├── auth.js
-│       ├── receipt.js
-│       ├── preferences.js
-│       ├── school.js
-│       ├── components/
-│       └── pages/
-├── data/                 ← editable CSV source files
-│   ├── seed_students.csv
-│   ├── teachers.csv
-│   └── students_master.csv  ← registrar's archive (auto-maintained)
-└── tools/
-    ├── seed_demo.py      ← creates 300 students + everything
-    └── scan.py           ← static-analysis scanner for development
+│       ├── pages/       # One file per route
+│       └── components/
+├── docker-compose.yml
+└── .env.example
 ```
-
----
-
-## License
-
-Copyright © 2026 **Gaurav Singh Thakur**. All rights reserved.
-
-This project is licensed under
-[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International](./LICENSE)
-(CC BY-NC-SA 4.0).
-
-In short:
-
-- **Free to use, copy, modify, and share** — for non-commercial purposes.
-- **Attribution required** — credit Gaurav Singh Thakur and keep the
-  project name visible somewhere in the application.
-- **Share-alike** — if you build on it, your version uses the same
-  license.
-
-For commercial deployment, please open an issue first.
-
----
-
-## Contributing
-
-Pull requests are welcome. The code is organised so each agent lives in
-its own file — pick one and improve it without touching anything else.
-Areas where help is especially welcome:
-
-- Accessibility (screen readers, keyboard navigation).
-- Regional language support (Hindi, Telugu, Kannada UI strings).
-- Additional report formats (PDF rendering, Excel exports beyond CSV).
-- More mind games for students.
-- Real SMTP setup guides for forgot-password emails.
-
-If you're new to the codebase, start with `DOCUMENTATION.md` — it walks
-through every module.
-
----
-
-## Acknowledgements
-
-Thanks to the school staff and teachers whose feedback on real-world
-workflows shaped the tile system, the receipt layout, and the role
-boundaries between owner / staff / teacher / student.
-
-Built and maintained by **Gaurav Singh Thakur**. If this project helps
-your school or your learning, a star on the repository goes a long way.

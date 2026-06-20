@@ -2,11 +2,14 @@ import axios from "axios";
 
 export const API_BASE = "http://127.0.0.1:8000";
 
+export const TOKEN_KEY = "sage_token";
+export const USER_KEY  = "sage_user";
+
 export const api = axios.create({ baseURL: API_BASE });
 
 // Attach JWT on every request.
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("nhs_token");
+  const token = localStorage.getItem(TOKEN_KEY);
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
@@ -16,8 +19,8 @@ api.interceptors.response.use(
   (r) => r,
   (err) => {
     if (err?.response?.status === 401) {
-      localStorage.removeItem("nhs_token");
-      localStorage.removeItem("nhs_user");
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
       if (window.location.pathname !== "/login") window.location.href = "/login";
     }
     return Promise.reject(err);

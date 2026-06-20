@@ -35,6 +35,7 @@ from agents import (
     scanner_agent,
     ai_agent,
     records_agent,
+    insights_agent,
 )
 
 SCHOOL_NAME = "Nagarjuna High School"
@@ -44,7 +45,7 @@ Base.metadata.create_all(bind=engine)
 
 
 def _migrate():
-    """Pick up new columns added by newer versions without dropping data."""
+    """Pick up new columns / tables added by newer versions without dropping data."""
     add_col = [
         ("users",    "status",                "VARCHAR DEFAULT 'active'"),
         ("users",    "can_do_front_office",   "BOOLEAN DEFAULT 0"),
@@ -58,6 +59,32 @@ def _migrate():
                 conn.commit()
             except Exception:
                 pass
+
+        # Backfill teacher_classes join table from legacy classes_taught string
+        try:
+            conn.execute(text(
+                "CREATE TABLE IF NOT EXISTS teacher_classes "
+                "(id INTEGER PRIMARY KEY, teacher_id INTEGER NOT NULL, student_class VARCHAR NOT NULL)"
+            ))
+            conn.commit()
+            teachers = conn.execute(text("SELECT id, classes_taught FROM teachers")).fetchall()
+            for tid, cls_str in teachers:
+                if not cls_str:
+                    continue
+                existing = conn.execute(
+                    text("SELECT 1 FROM teacher_classes WHERE teacher_id=:tid LIMIT 1"),
+                    {"tid": tid}
+                ).fetchone()
+                if existing:
+                    continue
+                for cls in [c.strip() for c in cls_str.split(",") if c.strip()]:
+                    conn.execute(
+                        text("INSERT INTO teacher_classes (teacher_id, student_class) VALUES (:tid, :cls)"),
+                        {"tid": tid, "cls": cls}
+                    )
+            conn.commit()
+        except Exception:
+            pass
 
 
 DEFAULT_TILES = [
@@ -159,22 +186,22 @@ for r in (auth_agent.router, students_agent.router, fees_agent.router,
           tiles_agent.router, exams_agent.router, teachers_agent.router,
           assignments_agent.router, teacher_self_agent.router,
           student_self_agent.router, audit_agent.router, scanner_agent.router,
-          ai_agent.router, records_agent.router):
+          ai_agent.router, records_agent.router, insights_agent.router):
     app.include_router(r)
 
 
 @app.get("/")
 def health():
     return {
-        "name": SCHOOL_NAME,
-        "short": SCHOOL_SHORT,
-        "version": "0.7.0",
+        "name": "Sage",
+        "tagline": "AI-powered School ERP",
+        "version": "1.0.0",
         "agents": [
             "auth", "students", "fees", "finance", "expenses",
             "reports", "tiles", "exams",
             "teachers", "assignments",
             "teacher_self", "student_self",
-            "audit", "scanner", "ai", "records",
+            "audit", "scanner", "ai", "records", "insights",
         ],
         "status": "ok",
     }

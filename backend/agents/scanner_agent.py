@@ -35,7 +35,7 @@ AGENT_NAMES = [
     "expenses_agent", "reports_agent", "tiles_agent", "exams_agent",
     "teachers_agent", "assignments_agent",
     "teacher_self_agent", "student_self_agent",
-    "audit_agent", "scanner_agent",
+    "audit_agent", "scanner_agent", "insights_agent",
 ]
 
 TABLES = [
@@ -156,6 +156,13 @@ def run_scan(db: Session, triggered_by: str = "manual") -> models.ScannerRun:
     subject = f"Scanner: {run.summary}"
     for ow in owners:
         notifications.send(db, ow.email, subject, body, kind="scanner")
+
+    # Regenerate AI insights after every scan so the dashboard stays fresh
+    try:
+        from agents.insights_agent import generate_insights
+        generate_insights(db)
+    except Exception as e:
+        print(f"[scanner] insights generation failed: {e}", file=sys.stderr)
 
     return run
 

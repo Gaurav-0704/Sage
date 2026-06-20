@@ -1,11 +1,12 @@
-# Minimum versions only — lets pip pick the newest wheels that match
-# your Python version (important on Python 3.14, where older pinned
-# versions would try to compile from source).
-fastapi>=0.115.5
-uvicorn[standard]>=0.32.0
-sqlalchemy>=2.0.36
-pydantic>=2.10.0
-pydantic[email]>=2.10.0
-python-jose[cryptography]>=3.3.0
-bcrypt>=4.0.1
-python-multipart>=0.0.18
+fastapi==0.136.1
+uvicorn[standard]==0.34.3
+sqlalchemy==2.0.49
+pydantic[email]==2.13.3
+python-jose[cryptography]==3.5.0
+bcrypt==5.0.0
+python-multipart==0.0.26
+python-dotenv==1.2.2
+httptools==0.7.1
+pytest==8.4.1
+pytest-asyncio==0.26.0
+httpx==0.28.1

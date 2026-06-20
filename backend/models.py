@@ -273,3 +273,26 @@ class Tile(Base):
     sort_order = Column(Integer, default=0)
     active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class AIInsight(Base):
+    """Proactive AI-generated observations about school health, written nightly."""
+    __tablename__ = "ai_insights"
+
+    id = Column(Integer, primary_key=True)
+    category = Column(String, nullable=False)   # finance | fees | academic | operations
+    severity = Column(String, default="info")   # info | warning | critical
+    title = Column(String, nullable=False)
+    body = Column(Text, nullable=False)
+    action_hint = Column(String)                # suggested follow-up question for assistant
+    generated_at = Column(DateTime, default=datetime.utcnow, index=True)
+    dismissed = Column(Boolean, default=False)
+
+
+class TeacherClass(Base):
+    """Normalised teacher ↔ class mapping (replaces comma-separated classes_taught)."""
+    __tablename__ = "teacher_classes"
+
+    id = Column(Integer, primary_key=True)
+    teacher_id = Column(Integer, ForeignKey("teachers.id"), nullable=False, index=True)
+    student_class = Column(String, nullable=False)

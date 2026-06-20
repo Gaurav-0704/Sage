@@ -25,9 +25,10 @@ import os
 import urllib.error
 import urllib.request
 from datetime import date as Date, datetime
-from typing import Any
+from typing import Any, AsyncIterator
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
 import auth
@@ -969,3 +970,105 @@ def list_tools(_owner: models.User = Depends(require_owner)):
         "destructive": t["name"] in DESTRUCTIVE,
         "readonly":    t["name"] in READONLY,
     } for t in TOOLS]
+
+
+# ---------------------------------------------------------------------------
+# Streaming endpoint (SSE) — tokens appear as they arrive from Claude
+# ---------------------------------------------------------------------------
+
+def _stream_claude(messages: list[dict]):
+    """Generator that yields SSE lines from Claude's streaming API."""
+    if not ANTHROPIC_KEY:
+        yield "data: " + json.dumps({"error": "ANTHROPIC_API_KEY not configured"}) + "\n\n"
+        return
+
+    body = json.dumps({
+        "model": ANTHROPIC_MODEL,
+        "max_tokens": 1500,
+        "stream": True,
+        "system": SYSTEM_PROMPT.format(today=Date.today().isoformat()),
+        "tools": TOOLS,
+        "messages": messages,
+    }).encode()
+
+    req = urllib.request.Request(
+        ANTHROPIC_URL, data=body,
+        headers={
+            "x-api-key": ANTHROPIC_KEY,
+            "anthropic-version": "2023-06-01",
+            "content-type": "application/json",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=90) as r:
+            for raw_line in r:
+                line = raw_line.decode("utf-8").rstrip()
+                if not line.startswith("data:"):
+                    continue
+                data_str = line[5:].strip()
+                if data_str == "[DONE]":
+                    yield "data: [DONE]\n\n"
+                    break
+                try:
+                    event = json.loads(data_str)
+                    etype = event.get("type", "")
+                    if etype == "content_block_delta":
+                        delta = event.get("delta", {})
+                        if delta.get("type") == "text_delta":
+                            yield "data: " + json.dumps({"text": delta["text"]}) + "\n\n"
+                    elif etype == "content_block_start":
+                        block = event.get("content_block", {})
+                        if block.get("type") == "tool_use":
+                            yield "data: " + json.dumps({
+                                "tool_start": block["name"],
+                                "tool_id": block["id"],
+                            }) + "\n\n"
+                    elif etype == "message_stop":
+                        yield "data: [DONE]\n\n"
+                        break
+                except json.JSONDecodeError:
+                    pass
+    except Exception as e:
+        yield "data: " + json.dumps({"error": str(e)}) + "\n\n"
+
+
+@router.post("/stream")
+def stream_chat(
+    payload: schemas.AIChatIn,
+    db: Session = Depends(get_db),
+    owner: models.User = Depends(require_owner),
+):
+    """
+    Streaming chat via Server-Sent Events.
+    Creates/extends conversation, streams tokens, saves the full reply when done.
+    The client reads the EventStream; when it receives [DONE] it calls /ai/chat
+    with the same conversation_id to get the saved message with actions.
+    """
+    if payload.conversation_id:
+        conv = db.query(models.AIConversation).filter(
+            models.AIConversation.id == payload.conversation_id,
+            models.AIConversation.user_id == owner.id).first()
+        if not conv:
+            raise HTTPException(404, "Conversation not found")
+    else:
+        title = payload.message[:60] + ("…" if len(payload.message) > 60 else "")
+        conv = models.AIConversation(user_id=owner.id, title=title)
+        db.add(conv)
+        db.commit()
+        db.refresh(conv)
+
+    user_msg = models.AIMessage(
+        conversation_id=conv.id, role="user", content=payload.message)
+    db.add(user_msg)
+    db.commit()
+
+    messages = _conversation_to_messages(db, conv.id)
+
+    def event_stream():
+        # First event: announce conversation_id so client can track it
+        yield "data: " + json.dumps({"conversation_id": conv.id}) + "\n\n"
+        yield from _stream_claude(messages)
+
+    return StreamingResponse(event_stream(), media_type="text/event-stream",
+                              headers={"Cache-Control": "no-cache",
+                                       "X-Accel-Buffering": "no"})

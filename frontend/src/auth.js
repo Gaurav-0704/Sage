@@ -1,25 +1,25 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
-import { api } from "./api";
+import { api, TOKEN_KEY, USER_KEY } from "./api";
 
 const AuthCtx = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
-    const raw = localStorage.getItem("nhs_user");
+    const raw = localStorage.getItem(USER_KEY);
     return raw ? JSON.parse(raw) : null;
   });
 
   const login = useCallback(async (email, password) => {
     const res = await api.post("/auth/login", { email, password });
-    localStorage.setItem("nhs_token", res.data.access_token);
-    localStorage.setItem("nhs_user", JSON.stringify(res.data.user));
+    localStorage.setItem(TOKEN_KEY, res.data.access_token);
+    localStorage.setItem(USER_KEY, JSON.stringify(res.data.user));
     setUser(res.data.user);
     return res.data.user;
   }, []);
 
   const logout = useCallback(() => {
-    localStorage.removeItem("nhs_token");
-    localStorage.removeItem("nhs_user");
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
     setUser(null);
   }, []);
 

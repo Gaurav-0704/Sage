@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { api } from "../api";
+import { useLocation } from "react-router-dom";
+import { api, API_BASE, TOKEN_KEY } from "../api";
 
 const SUGGESTIONS = [
   "Show me the dashboard summary.",
@@ -8,26 +9,39 @@ const SUGGESTIONS = [
   "Increase the tuition fee for class 8 by 10% for academic year 2025-26.",
   "Create a Term 2 exam for class 10 on 2026-01-15.",
   "How much did we collect in cash today?",
+  "List teachers and their assigned classes.",
+  "Show me all students with dues above ₹10000.",
 ];
 
 export default function OwnerAI() {
-  const [status, setStatus] = useState(null);
-  const [tools, setTools]   = useState([]);
-  const [conv, setConv]     = useState(null);
+  const location = useLocation();
+  const [status, setStatus]   = useState(null);
+  const [tools, setTools]     = useState([]);
+  const [conv, setConv]       = useState(null);
   const [conversations, setConversations] = useState([]);
   const [messages, setMessages] = useState([]);
-  const [input, setInput]   = useState("");
-  const [busy, setBusy]     = useState(false);
-  const [err, setErr]       = useState("");
+  const [input, setInput]     = useState("");
+  const [busy, setBusy]       = useState(false);
+  const [streaming, setStreaming] = useState(false);
+  const [streamText, setStreamText] = useState("");
+  const [err, setErr]         = useState("");
   const [showHelp, setShowHelp] = useState(false);
   const bottomRef = useRef(null);
+  const abortRef  = useRef(null);
+
+  // Accept pre-fill from Dashboard insights
+  useEffect(() => {
+    if (location.state?.prefill) {
+      setInput(location.state.prefill);
+      window.history.replaceState({}, "");
+    }
+  }, [location.state]);
 
   const reload = useCallback((convId) => {
     Promise.all([
       api.get("/ai/status"),
       api.get("/ai/conversations"),
-      convId ? api.get(`/ai/conversations/${convId}/messages`)
-             : Promise.resolve({ data: [] }),
+      convId ? api.get(`/ai/conversations/${convId}/messages`) : Promise.resolve({ data: [] }),
     ]).then(([s, c, m]) => {
       setStatus(s.data); setConversations(c.data); setMessages(m.data);
     }).catch((e) => setErr(e?.response?.data?.detail || "Failed"));
@@ -37,20 +51,94 @@ export default function OwnerAI() {
   useEffect(() => {
     if (status?.configured) api.get("/ai/tools").then((r) => setTools(r.data)).catch(() => {});
   }, [status?.configured]);
-  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
+  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, streamText]);
+
+  const sendStream = async (text) => {
+    if (!text.trim() || busy || streaming) return;
+    setStreaming(true);
+    setStreamText("");
+    setErr("");
+    const token = localStorage.getItem(TOKEN_KEY);
+
+    try {
+      const res = await fetch(`${API_BASE}/ai/stream`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ conversation_id: conv, message: text }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.detail || `HTTP ${res.status}`);
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let convId = conv;
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop();
+
+        for (const line of lines) {
+          if (!line.startsWith("data:")) continue;
+          const raw = line.slice(5).trim();
+          if (raw === "[DONE]") {
+            // Fetch the saved message with full actions from non-streaming endpoint
+            setStreaming(false);
+            setStreamText("");
+            await api.post("/ai/chat", { conversation_id: convId, message: text })
+              .catch(() => {});
+            reload(convId);
+            return;
+          }
+          try {
+            const event = JSON.parse(raw);
+            if (event.conversation_id) {
+              convId = event.conversation_id;
+              setConv(convId);
+            } else if (event.text) {
+              setStreamText((prev) => prev + event.text);
+            } else if (event.tool_start) {
+              setStreamText((prev) => prev + `\n\n[Calling ${event.tool_start}…]`);
+            } else if (event.error) {
+              throw new Error(event.error);
+            }
+          } catch {}
+        }
+      }
+    } catch (e) {
+      setErr(e.message || "Stream failed");
+    } finally {
+      setStreaming(false);
+      setStreamText("");
+    }
+  };
 
   const send = async (e, override) => {
     e?.preventDefault();
     const text = override ?? input;
-    if (!text.trim() || busy) return;
-    setBusy(true); setErr("");
+    if (!text.trim() || busy || streaming) return;
+    setInput("");
+    setBusy(true);
     try {
-      const r = await api.post("/ai/chat",
-                                { conversation_id: conv, message: text });
-      setConv(r.data.conversation_id); setInput("");
-      reload(r.data.conversation_id);
-    } catch (e) { setErr(e?.response?.data?.detail || "Failed"); }
-    finally { setBusy(false); }
+      if (status?.configured) {
+        await sendStream(text);
+      } else {
+        const r = await api.post("/ai/chat", { conversation_id: conv, message: text });
+        setConv(r.data.conversation_id);
+        reload(r.data.conversation_id);
+      }
+    } finally {
+      setBusy(false);
+    }
   };
 
   const remove = async (cid) => {
@@ -66,8 +154,7 @@ export default function OwnerAI() {
         <div>
           <h1 className="page-title">Assistant</h1>
           <p className="page-sub">
-            Ask in plain English. The assistant will plan changes and wait for your
-            approval — you control which actions actually run.
+            Ask in plain English. Claude proposes actions — you approve each one before anything runs.
           </p>
         </div>
         <div className="flex gap-8 flex-wrap">
@@ -75,7 +162,7 @@ export default function OwnerAI() {
             {showHelp ? "Hide" : "What can it do?"}
           </button>
           <button className="btn btn-secondary"
-                  onClick={() => { setConv(null); setMessages([]); }}>
+                  onClick={() => { setConv(null); setMessages([]); setStreamText(""); }}>
             + New chat
           </button>
         </div>
@@ -83,9 +170,7 @@ export default function OwnerAI() {
 
       {!status?.configured && (
         <div className="error-banner">
-          Assistant not configured. Set the <code>ANTHROPIC_API_KEY</code> environment
-          variable and restart the backend (<code>py run.py</code>). Get a key at
-          console.anthropic.com.
+          Assistant not configured. Set the <code>ANTHROPIC_API_KEY</code> environment variable and restart.
         </div>
       )}
 
@@ -99,7 +184,7 @@ export default function OwnerAI() {
                   <code style={{ background: "var(--surface-2)", padding: "2px 6px",
                                   borderRadius: 4, fontSize: 11 }}>{t.name}</code>
                   {t.destructive && <span className="pill red">destructive</span>}
-                  {t.readonly && <span className="pill">read-only</span>}
+                  {t.readonly    && <span className="pill">read-only</span>}
                 </div>
                 <div className="text-3" style={{ fontSize: 12, marginTop: 4 }}>{t.description}</div>
               </div>
@@ -122,14 +207,13 @@ export default function OwnerAI() {
                  style={{
                    borderRadius: 8, marginBottom: 4, paddingTop: 8, paddingBottom: 8,
                    background: c.id === conv ? "var(--brand-50)" : "transparent",
+                   cursor: "pointer",
                  }}
                  onClick={() => setConv(c.id)}>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 13, fontWeight: 500,
                               whiteSpace: "nowrap", overflow: "hidden",
-                              textOverflow: "ellipsis" }}>
-                  {c.title}
-                </div>
+                              textOverflow: "ellipsis" }}>{c.title}</div>
                 <div className="text-3" style={{ fontSize: 10 }}>
                   {new Date(c.created_at).toLocaleDateString()}
                 </div>
@@ -145,15 +229,13 @@ export default function OwnerAI() {
         <div className="card" style={{ display: "flex", flexDirection: "column",
                                        padding: 0, minHeight: "70vh", maxHeight: "78vh" }}>
           <div style={{ flex: 1, overflow: "auto", padding: 18 }}>
-            {messages.length === 0 && (
+            {messages.length === 0 && !streaming && (
               <div style={{ padding: "40px 0", textAlign: "center" }}>
                 <div style={{ fontSize: 36, marginBottom: 10 }}>💬</div>
                 <div className="text-2" style={{ fontSize: 14 }}>
-                  Ask the assistant anything about Nagarjuna High School.
+                  Ask the Sage assistant anything about your school.
                 </div>
-                <div className="text-3" style={{ fontSize: 12, marginTop: 6 }}>
-                  Try one of these:
-                </div>
+                <div className="text-3" style={{ fontSize: 12, marginTop: 6 }}>Try one of these:</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 6,
                               maxWidth: 540, margin: "12px auto 0" }}>
                   {SUGGESTIONS.map((s) => (
@@ -166,9 +248,28 @@ export default function OwnerAI() {
               </div>
             )}
             {messages.map((m) => (
-              <MessageBubble key={m.id} m={m} convId={conv} reload={() => reload(conv)}/>
+              <MessageBubble key={m.id} m={m} convId={conv} reload={() => reload(conv)} />
             ))}
-            <div ref={bottomRef}/>
+
+            {/* Live streaming bubble */}
+            {streaming && (
+              <div style={{ marginBottom: 18 }}>
+                <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                  <div className="avatar" style={{ width: 30, height: 30, fontSize: 12, flexShrink: 0 }}>A</div>
+                  <div style={{
+                    background: "var(--surface-2)", padding: "10px 14px", borderRadius: 14,
+                    fontSize: 13.5, lineHeight: 1.55, whiteSpace: "pre-wrap",
+                    overflowWrap: "break-word", flex: 1,
+                  }}>
+                    {streamText || <span style={{ color: "var(--text-3)" }}>Thinking…</span>}
+                    <span style={{ display: "inline-block", width: 8, height: 14,
+                                    background: "var(--brand-500)", marginLeft: 2,
+                                    animation: "blink 0.8s step-end infinite" }} />
+                  </div>
+                </div>
+              </div>
+            )}
+            <div ref={bottomRef} />
           </div>
 
           <form onSubmit={send}
@@ -176,9 +277,9 @@ export default function OwnerAI() {
                           borderTop: "1px solid var(--border)" }}>
             <input className="input" placeholder="Ask the assistant…"
                    value={input} onChange={(e) => setInput(e.target.value)}
-                   disabled={busy || !status?.configured}/>
-            <button className="btn" disabled={busy || !input.trim() || !status?.configured}>
-              {busy ? "Thinking…" : "Send"}
+                   disabled={busy || streaming || !status?.configured} />
+            <button className="btn" disabled={busy || streaming || !input.trim() || !status?.configured}>
+              {streaming ? "Streaming…" : busy ? "Sending…" : "Send"}
             </button>
           </form>
         </div>
@@ -192,23 +293,22 @@ export default function OwnerAI() {
         }
         @media (max-width: 800px) {
           .ai-layout { grid-template-columns: 1fr; }
-          .ai-layout > .card:first-child {
-            max-height: 200px !important;
-          }
+          .ai-layout > .card:first-child { max-height: 200px !important; }
+        }
+        @keyframes blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
         }
       `}</style>
     </div>
   );
 }
 
-/* ---------- One message bubble (user, system, or assistant + actions) ---------- */
 function MessageBubble({ m, convId, reload }) {
   if (m.role === "user") {
     const isSystem = m.content.startsWith("[system]");
     return (
-      <div style={{ display: "flex",
-                     justifyContent: isSystem ? "center" : "flex-end",
-                     marginBottom: 14 }}>
+      <div style={{ display: "flex", justifyContent: isSystem ? "center" : "flex-end", marginBottom: 14 }}>
         <div style={{
           maxWidth: "82%",
           background: isSystem ? "var(--surface-2)" : "var(--brand-50)",
@@ -227,25 +327,18 @@ function MessageBubble({ m, convId, reload }) {
   return (
     <div style={{ marginBottom: 18 }}>
       <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-        <div className="avatar" style={{ width: 30, height: 30, fontSize: 12,
-                                          flexShrink: 0 }}>A</div>
+        <div className="avatar" style={{ width: 30, height: 30, fontSize: 12, flexShrink: 0 }}>A</div>
         <div style={{ flex: 1, minWidth: 0 }}>
           {m.content && (
-            <div style={{ background: "var(--surface-2)",
-                           padding: "10px 14px", borderRadius: 14,
+            <div style={{ background: "var(--surface-2)", padding: "10px 14px", borderRadius: 14,
                            fontSize: 13.5, lineHeight: 1.55,
                            whiteSpace: "pre-wrap", overflowWrap: "break-word" }}>
               {m.content}
             </div>
           )}
           {actions.length > 0 && (
-            <ActionsPanel
-              messageId={m.id}
-              convId={convId}
-              actions={actions}
-              executed={m.executed}
-              onApplied={reload}
-            />
+            <ActionsPanel messageId={m.id} convId={convId} actions={actions}
+                          executed={m.executed} onApplied={reload} />
           )}
         </div>
       </div>
@@ -253,24 +346,16 @@ function MessageBubble({ m, convId, reload }) {
   );
 }
 
-/* ---------- Per-action approval panel ---------- */
 function ActionsPanel({ messageId, convId, actions, executed, onApplied }) {
-  // approved: set of action ids selected for execution
-  const [approved, setApproved] = useState(() => new Set(
-    // default: include all non-destructive
-    actions.filter((a) => !a.destructive).map((a) => a.id)
-  ));
+  const [approved, setApproved] = useState(() =>
+    new Set(actions.filter((a) => !a.destructive).map((a) => a.id)));
   const [overrides, setOverrides] = useState({});
-  const [editing, setEditing] = useState(null);
-  const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState("");
+  const [editing, setEditing]   = useState(null);
+  const [busy, setBusy]         = useState(false);
+  const [err, setErr]           = useState("");
 
   if (executed) {
-    return (
-      <div className="success-banner" style={{ marginTop: 10, marginBottom: 0 }}>
-        ✓ Actions executed.
-      </div>
-    );
+    return <div className="success-banner" style={{ marginTop: 10, marginBottom: 0 }}>✓ Actions executed.</div>;
   }
 
   const toggle = (id) => {
@@ -280,24 +365,14 @@ function ActionsPanel({ messageId, convId, actions, executed, onApplied }) {
   };
 
   const apply = async () => {
-    if (approved.size === 0) {
-      setErr("Pick at least one action to apply.");
-      return;
-    }
-    const destructiveCount = actions.filter(
-      (a) => approved.has(a.id) && a.destructive).length;
-    if (destructiveCount > 0) {
-      if (!window.confirm(
-        `${destructiveCount} destructive action(s) will run. ` +
-        `This cannot be undone. Continue?`)) return;
-    }
+    if (approved.size === 0) { setErr("Pick at least one action."); return; }
+    const destructiveCount = actions.filter((a) => approved.has(a.id) && a.destructive).length;
+    if (destructiveCount > 0 && !window.confirm(`${destructiveCount} destructive action(s) — cannot be undone. Continue?`)) return;
     setBusy(true); setErr("");
     try {
       await api.post("/ai/execute", {
-        conversation_id: convId,
-        message_id: messageId,
-        approved_action_ids: Array.from(approved),
-        overrides,
+        conversation_id: convId, message_id: messageId,
+        approved_action_ids: Array.from(approved), overrides,
       });
       onApplied();
     } catch (e) { setErr(e?.response?.data?.detail || "Failed"); }
@@ -306,65 +381,40 @@ function ActionsPanel({ messageId, convId, actions, executed, onApplied }) {
 
   return (
     <div style={{ marginTop: 10, padding: 14, borderRadius: 12,
-                   background: "var(--surface-3)",
-                   border: "1px solid var(--border-2)" }}>
+                   background: "var(--surface-3)", border: "1px solid var(--border-2)" }}>
       <div style={{ fontWeight: 700, fontSize: 12, marginBottom: 10,
-                     color: "var(--brand-500)", textTransform: "uppercase",
-                     letterSpacing: ".1em" }}>
+                     color: "var(--brand-500)", textTransform: "uppercase", letterSpacing: ".1em" }}>
         Proposed actions ({actions.length}) · {approved.size} selected
       </div>
       {err && <div className="error-banner">{err}</div>}
-
       {actions.map((a, i) => (
-        <div key={a.id} style={{
-          padding: "10px 0",
-          borderTop: i ? "1px solid var(--border)" : "none",
-        }}>
-          <label style={{ display: "flex", alignItems: "flex-start",
-                           gap: 10, cursor: "pointer" }}>
-            <input type="checkbox" checked={approved.has(a.id)}
-                   onChange={() => toggle(a.id)}
-                   style={{ marginTop: 4, transform: "scale(1.2)" }}/>
+        <div key={a.id} style={{ padding: "10px 0", borderTop: i ? "1px solid var(--border)" : "none" }}>
+          <label style={{ display: "flex", alignItems: "flex-start", gap: 10, cursor: "pointer" }}>
+            <input type="checkbox" checked={approved.has(a.id)} onChange={() => toggle(a.id)}
+                   style={{ marginTop: 4, transform: "scale(1.2)" }} />
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6,
-                             flexWrap: "wrap" }}>
-                <code style={{ background: "var(--surface-2)",
-                                padding: "2px 6px", borderRadius: 4,
-                                fontSize: 12, fontWeight: 600 }}>
-                  {a.name}
-                </code>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                <code style={{ background: "var(--surface-2)", padding: "2px 6px",
+                                borderRadius: 4, fontSize: 12, fontWeight: 600 }}>{a.name}</code>
                 {a.destructive && <span className="pill red">destructive</span>}
-                {a.readonly && <span className="pill">read-only</span>}
+                {a.readonly    && <span className="pill">read-only</span>}
                 <button className="btn btn-secondary"
-                        style={{ padding: "2px 8px", fontSize: 11,
-                                  marginLeft: "auto", minHeight: "auto" }}
-                        onClick={(e) => { e.preventDefault();
-                                          setEditing(editing === a.id ? null : a.id); }}>
+                        style={{ padding: "2px 8px", fontSize: 11, marginLeft: "auto", minHeight: "auto" }}
+                        onClick={(e) => { e.preventDefault(); setEditing(editing === a.id ? null : a.id); }}>
                   {editing === a.id ? "Done" : "Edit"}
                 </button>
               </div>
-
               {editing === a.id ? (
-                <textarea
-                  className="input"
+                <textarea className="input"
                   rows={Math.min(8, Object.keys(a.input).length + 2)}
-                  style={{ marginTop: 8, fontFamily: "ui-monospace, monospace",
-                            fontSize: 12 }}
+                  style={{ marginTop: 8, fontFamily: "ui-monospace, monospace", fontSize: 12 }}
                   value={JSON.stringify(overrides[a.id] || a.input, null, 2)}
                   onChange={(e) => {
-                    try {
-                      const parsed = JSON.parse(e.target.value);
-                      setOverrides({ ...overrides, [a.id]: parsed });
-                    } catch {
-                      // leave as-is until valid
-                    }
-                  }}
-                />
+                    try { setOverrides({ ...overrides, [a.id]: JSON.parse(e.target.value) }); } catch {}
+                  }} />
               ) : (
-                <pre style={{ margin: "6px 0 0", fontSize: 11.5,
-                               color: "var(--text-2)",
-                               fontFamily: "ui-monospace, monospace",
-                               whiteSpace: "pre-wrap",
+                <pre style={{ margin: "6px 0 0", fontSize: 11.5, color: "var(--text-2)",
+                               fontFamily: "ui-monospace, monospace", whiteSpace: "pre-wrap",
                                overflowWrap: "break-word" }}>
                   {JSON.stringify(overrides[a.id] || a.input, null, 2)}
                 </pre>
@@ -373,21 +423,12 @@ function ActionsPanel({ messageId, convId, actions, executed, onApplied }) {
           </label>
         </div>
       ))}
-
-      <div className="flex gap-8" style={{ marginTop: 12, justifyContent: "flex-end",
-                                            flexWrap: "wrap" }}>
-        <button className="btn btn-secondary"
-                onClick={() => setApproved(new Set())}
-                disabled={busy || approved.size === 0}>
-          Deselect all
-        </button>
-        <button className="btn btn-secondary"
-                onClick={() => setApproved(new Set(actions.map((a) => a.id)))}
-                disabled={busy || approved.size === actions.length}>
-          Select all
-        </button>
-        <button className="btn" onClick={apply}
-                disabled={busy || approved.size === 0}>
+      <div className="flex gap-8" style={{ marginTop: 12, justifyContent: "flex-end", flexWrap: "wrap" }}>
+        <button className="btn btn-secondary" disabled={busy || approved.size === 0}
+                onClick={() => setApproved(new Set())}>Deselect all</button>
+        <button className="btn btn-secondary" disabled={busy || approved.size === actions.length}
+                onClick={() => setApproved(new Set(actions.map((a) => a.id)))}>Select all</button>
+        <button className="btn" onClick={apply} disabled={busy || approved.size === 0}>
           {busy ? "Applying…" : `✓ Apply ${approved.size} action(s)`}
         </button>
       </div>

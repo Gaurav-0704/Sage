@@ -564,6 +564,34 @@ class AIExecuteIn(BaseModel):
     message_id: int
 
 
+class AIInsightOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    category: str
+    severity: str
+    title: str
+    body: str
+    action_hint: Optional[str]
+    generated_at: datetime
+    dismissed: bool
+
+
+# ---------------- AT-RISK ---------------- #
+
+class AtRiskStudent(BaseModel):
+    id: int
+    admission_no: str
+    name: str
+    student_class: str
+    section: Optional[str]
+    parent_name: Optional[str]
+    phone: Optional[str]
+    due: float
+    days_since_payment: Optional[int]
+    risk_score: int          # 0-100
+    risk_level: str          # low | medium | high | critical
+
+
 StudentDetailOut.model_rebuild()
 TeacherDashboardOut.model_rebuild()
 StudentDashboardOut.model_rebuild()
