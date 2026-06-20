@@ -18,7 +18,7 @@ from dependencies import (
 
 router = APIRouter(prefix="/expenses", tags=["expenses"])
 
-SCHOOL_NAME = "Nagarjuna High School"
+SCHOOL_NAME = "Sage"
 VALID_CATEGORIES = {"salary", "utilities", "supplies", "maintenance", "transport", "other"}
 
 

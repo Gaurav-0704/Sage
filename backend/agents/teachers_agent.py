@@ -196,9 +196,9 @@ def csv_template(_owner: models.User = Depends(require_owner)):
     w = csv.DictWriter(buf, fieldnames=TEACHER_COLS, extrasaction="ignore")
     w.writeheader()
     w.writerow({
-        "employee_id":   "NHST013",
+        "employee_id":   "SGET013",
         "name":          "Example Teacher",
-        "email":         "first.last@nagarjuna.school",
+        "email":         "first.last@sage.school",
         "subject":       "Math",
         "classes_taught": "5,6,7",
         "qualification": "M.Sc, B.Ed",

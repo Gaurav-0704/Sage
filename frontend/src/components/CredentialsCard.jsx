@@ -16,15 +16,13 @@ const DEFAULT_PWD = {
 };
 
 const ALL_DEMO = [
-  { role: "owner",   email: "owner@nagarjuna.school", pwd: "owner123",   name: "School Owner" },
-  { role: "staff",   email: "staff@nagarjuna.school", pwd: "staff123",   name: "Front Office" },
-  { role: "teacher", email: "sunita.iyer@nagarjuna.school",   pwd: "teacher123", name: "Sunita Iyer (Math, KG-2, can do front office)" },
-  { role: "teacher", email: "karthik.menon@nagarjuna.school", pwd: "teacher123", name: "Karthik Menon (Math 5-7, can do front office)" },
-  { role: "teacher", email: "meera.bose@nagarjuna.school",    pwd: "teacher123", name: "Meera Bose (English 5-8, can do front office)" },
-  { role: "teacher", email: "geetha.joshi@nagarjuna.school",  pwd: "teacher123", name: "Geetha Joshi (Hindi 6-10, can do front office)" },
-  { role: "teacher", email: "anil.kapoor@nagarjuna.school",   pwd: "teacher123", name: "Anil Kapoor (Math 8-10)" },
-  { role: "student", email: "nhs0001@nagarjuna.school", pwd: "student123", name: "Student #1 (any nhs0001..nhs0300 works)" },
-  { role: "student", email: "nhs0150@nagarjuna.school", pwd: "student123", name: "Student #150 (try this for class 5)" },
+  { role: "owner",   email: "owner@sage.school", pwd: "owner123",   name: "School Owner" },
+  { role: "staff",   email: "staff@sage.school", pwd: "staff123",   name: "Front Office" },
+  { role: "teacher", email: "teacher1@sage.school",  pwd: "teacher123", name: "Teacher 1 (can do front office)" },
+  { role: "teacher", email: "teacher2@sage.school",  pwd: "teacher123", name: "Teacher 2 (can do front office)" },
+  { role: "teacher", email: "teacher3@sage.school",  pwd: "teacher123", name: "Teacher 3" },
+  { role: "student", email: "sage0001@sage.school", pwd: "student123", name: "Student #1 (any sage0001..sage0500 works)" },
+  { role: "student", email: "sage0150@sage.school", pwd: "student123", name: "Student #150" },
 ];
 
 export default function CredentialsCard() {
@@ -34,10 +32,10 @@ export default function CredentialsCard() {
   if (!user) return null;
 
   const isDemo = (
-    (user.role === "owner"   && user.email === "owner@nagarjuna.school") ||
-    (user.role === "staff"   && user.email === "staff@nagarjuna.school") ||
-    (user.role === "teacher" && user.email.endsWith("@nagarjuna.school")) ||
-    (user.role === "student" && /^nhs\d{4}@nagarjuna\.school$/.test(user.email))
+    (user.role === "owner"   && user.email === "owner@sage.school") ||
+    (user.role === "staff"   && user.email === "staff@sage.school") ||
+    (user.role === "teacher" && user.email.endsWith("@sage.school")) ||
+    (user.role === "student" && /^sage\d{4}@sage\.school$/.test(user.email))
   );
   const defaultPwd = DEFAULT_PWD[user.role];
 

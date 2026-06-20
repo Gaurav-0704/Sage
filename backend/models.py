@@ -1,5 +1,5 @@
 """
-ORM models — Nagarjuna High School ERP, v0.5.
+ORM models — Sage ERP.
 
     users, password_reset_codes, notifications -> Auth Agent
     students                                   -> Students Agent

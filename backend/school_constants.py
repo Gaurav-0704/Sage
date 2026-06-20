@@ -15,7 +15,7 @@ TEACHERS_CSV   = DATA_DIR / "teachers.csv"
 # the records agent re-writes it on every student change.
 RECORDS_CSV    = DATA_DIR / "students_master.csv"
 
-SCHOOL_NAME    = "Nagarjuna High School"
+SCHOOL_NAME    = "Sage"
 SCHOOL_ADDRESS = "Set school address in school_constants.py"
 SCHOOL_PHONE   = "Set school phone in school_constants.py"
 

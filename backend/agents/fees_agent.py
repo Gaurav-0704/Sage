@@ -29,7 +29,7 @@ from dependencies import (
 )
 from school_constants import class_sort_key, PAYMENT_MODES
 
-SCHOOL_NAME = "Nagarjuna High School"
+SCHOOL_NAME = "Sage"
 
 router = APIRouter(tags=["fees"])
 

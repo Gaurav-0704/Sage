@@ -36,8 +36,8 @@ function ProfileCard({ user }) {
     e.preventDefault(); setMsg(""); setErr(""); setBusy(true);
     try {
       const r = await api.put("/auth/me", { name, email });
-      localStorage.setItem("nhs_user", JSON.stringify({
-        ...JSON.parse(localStorage.getItem("nhs_user") || "{}"),
+      localStorage.setItem("sage_user", JSON.stringify({
+        ...JSON.parse(localStorage.getItem("sage_user") || "{}"),
         ...r.data,
       }));
       setMsg("Profile updated. Sign out and back in for the change to take full effect.");

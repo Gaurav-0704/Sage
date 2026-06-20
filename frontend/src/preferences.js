@@ -2,9 +2,9 @@
 // data-* attributes on <html> so CSS can react.
 
 const KEYS = {
-  compact:    "nhs_compact",
-  fontSize:   "nhs_fontsize",
-  notifyMail: "nhs_notify_mail",
+  compact:    "sage_compact",
+  fontSize:   "sage_fontsize",
+  notifyMail: "sage_notify_mail",
 };
 
 export function getPref(key, fallback) {

@@ -5,14 +5,14 @@ by passlib's self-tests on bcrypt >= 4.1. bcrypt has a hard 72-byte limit
 on the password, which we enforce by truncation.
 """
 
+import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 import bcrypt
 from jose import jwt, JWTError
 
-# In production, load these from env vars.
-SECRET_KEY = "nhs-school-erp-dev-secret-change-in-production"
+SECRET_KEY = os.getenv("SECRET_KEY", "sage-erp-dev-secret-change-in-production")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_HOURS = 12
 

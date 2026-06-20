@@ -1,8 +1,8 @@
 """
-Nagarjuna High School ERP — FastAPI gateway, v0.7.
+Sage — FastAPI gateway.
 
-Mounts every agent, the audit middleware, CORS, and starts the nightly
-scanner. Each agent owns one job and stays in its own file so we can
+I mount every agent, the audit middleware, CORS, and start the nightly
+scanner. Each agent owns one domain and lives in its own file so I can
 edit them independently without touching the others.
 """
 
@@ -38,8 +38,8 @@ from agents import (
     insights_agent,
 )
 
-SCHOOL_NAME = "Nagarjuna High School"
-SCHOOL_SHORT = "NHS"
+SCHOOL_NAME = "Sage"
+SCHOOL_SHORT = "SGE"
 
 Base.metadata.create_all(bind=engine)
 
@@ -112,15 +112,15 @@ DEFAULT_TILES = [
 def seed_defaults():
     db = SessionLocal()
     try:
-        if not db.query(models.User).filter(models.User.email == "owner@nagarjuna.school").first():
+        if not db.query(models.User).filter(models.User.email == "owner@sage.school").first():
             db.add(models.User(
-                name="School Owner", email="owner@nagarjuna.school",
+                name="School Owner", email="owner@sage.school",
                 password=auth.hash_password("owner123"),
                 role="owner", status="active",
             ))
-        if not db.query(models.User).filter(models.User.email == "staff@nagarjuna.school").first():
+        if not db.query(models.User).filter(models.User.email == "staff@sage.school").first():
             db.add(models.User(
-                name="Front Office", email="staff@nagarjuna.school",
+                name="Front Office", email="staff@sage.school",
                 password=auth.hash_password("staff123"),
                 role="staff", status="active",
             ))
@@ -150,9 +150,9 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title=f"{SCHOOL_NAME} — School ERP",
-    description="A modular school management system for K-10.",
-    version="0.7.0",
+    title="Sage — AI-first School ERP",
+    description="AI-powered school management for K-10.",
+    version="1.0.0",
     lifespan=lifespan,
 )
 

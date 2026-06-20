@@ -46,9 +46,9 @@ export default function Signup() {
     <div className="auth-shell">
       <form className="auth-card" onSubmit={submit} style={{ width: 480 }}>
         <div className="auth-brand">
-          <div className="brand-mark">N</div>
+          <div className="brand-mark">S</div>
           <h1>Create your account</h1>
-          <p>Join Nagarjuna High School</p>
+          <p>Join Sage</p>
         </div>
 
         {err && <div className="error-banner">{err}</div>}
@@ -94,7 +94,7 @@ export default function Signup() {
           <div className="form-row">
             <label>Admission number</label>
             <input className="input" value={f.admission_no} onChange={set("admission_no")}
-                   placeholder="e.g. NHS0001" required/>
+                   placeholder="e.g. SGE0001" required/>
             <div className="text-3" style={{ fontSize: 11 }}>
               Must match your student record. Ask the office if you don't know it.
             </div>

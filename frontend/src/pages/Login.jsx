@@ -26,8 +26,8 @@ export default function Login() {
     <div className="auth-shell">
       <form className="auth-card" onSubmit={submit}>
         <div className="auth-brand">
-          <div className="brand-mark">N</div>
-          <h1>Nagarjuna High School</h1>
+          <div className="brand-mark">S</div>
+          <h1>Sage</h1>
           <p>Sign in to your account</p>
         </div>
 
@@ -37,7 +37,7 @@ export default function Login() {
           <label>Email</label>
           <input className="input" type="email" value={email}
                  onChange={(e) => setEmail(e.target.value)}
-                 placeholder="you@nagarjuna.school"
+                 placeholder="you@sage.school"
                  autoComplete="email" autoFocus required/>
         </div>
         <div className="form-row">
@@ -58,8 +58,8 @@ export default function Login() {
 
         <div className="auth-hint">
           <strong>Demo accounts</strong><br/>
-          Owner: owner@nagarjuna.school / owner123<br/>
-          Staff: staff@nagarjuna.school / staff123<br/>
+          Owner: owner@sage.school / owner123<br/>
+          Staff: staff@sage.school / staff123<br/>
           Teachers / Students: see <code>tools/seed_demo.py</code> output
         </div>
       </form>

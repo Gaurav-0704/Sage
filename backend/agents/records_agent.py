@@ -246,7 +246,7 @@ def bonafide(
 
     she_he, her_his, son_daughter = _pronoun(s.gender)
     issued_on = datetime.now().strftime("%d %B %Y")
-    ref = ref_no or f"NHS/BC/{s.id:04d}/{datetime.now():%y%m%d}"
+    ref = ref_no or f"SGE/BC/{s.id:04d}/{datetime.now():%y%m%d}"
 
     body = f"""
 <p>This is to certify that <strong>{s.name}</strong>, {son_daughter} of
@@ -314,7 +314,7 @@ def transfer_certificate(
         leave_d = _fmt_date(Date.today())
 
     issued_on = datetime.now().strftime("%d %B %Y")
-    tc_no = f"NHS/TC/{s.id:04d}/{datetime.now():%y%m}"
+    tc_no = f"SGE/TC/{s.id:04d}/{datetime.now():%y%m}"
 
     rows = [
         ("Name of student",         s.name),

@@ -20,7 +20,7 @@ from dependencies import get_db, get_current_user, require_owner
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 CODE_TTL_MIN = 15
-SCHOOL_NAME = "Nagarjuna High School"
+SCHOOL_NAME = "Sage"
 
 
 # ---------------- Login ---------------- #

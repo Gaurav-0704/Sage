@@ -73,7 +73,7 @@ export default function Layout() {
       <header className="topbar">
         <button className="hamburger" onClick={() => setOpen(true)} aria-label="Open menu">☰</button>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <div className="brand-mark" style={{ width: 30, height: 30, fontSize: 13 }}>N</div>
+          <div className="brand-mark" style={{ width: 30, height: 30, fontSize: 13 }}>S</div>
           <div className="topbar-title">{currentLabel}</div>
         </div>
       </header>
@@ -84,10 +84,10 @@ export default function Layout() {
 
       <aside className={"sidebar" + (open ? " open" : "")}>
         <div className="brand">
-          <div className="brand-mark">N</div>
+          <div className="brand-mark">S</div>
           <div>
-            <div className="brand-name">Nagarjuna High School</div>
-            <div className="brand-sub">Est. 2026 · K – 10</div>
+            <div className="brand-name">Sage</div>
+            <div className="brand-sub">AI-first School ERP · K–10</div>
           </div>
         </div>
 
