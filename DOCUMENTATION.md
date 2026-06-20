@@ -1,4 +1,4 @@
-# Nagarjuna High School ERP — A Complete Guidebook
+# Sage — A Complete Guidebook
 
 > Copyright © 2026 Gaurav Singh Thakur. Licensed under CC BY-NC-SA 4.0.
 > See [LICENSE](./LICENSE) for terms.
@@ -44,7 +44,7 @@ their exam marks in separate notebooks per teacher. Each system is
 fine on its own; together they create reconciliation work that
 swallows hours every month.
 
-The Nagarjuna High School (NHS) ERP is an attempt to bring all of that
+The Sage is an attempt to bring all of that
 into one application that:
 
 - A non-technical owner can run on a single laptop.
@@ -467,7 +467,7 @@ The login flow is intentionally simple.
       │ ◄────────────────────────────────────┘
       ▼
   localStorage:
-    nhs_token, nhs_user
+    sage_token, sage_user
       │
       │ on every request
       ▼
@@ -945,7 +945,7 @@ follows the same shape.
 ## Appendix B: file map
 
 ```
-NHS App/
+Sage/
 ├── README.md                  — public-facing overview
 ├── DOCUMENTATION.md           — this guidebook
 ├── LICENSE                    — CC BY-NC-SA 4.0

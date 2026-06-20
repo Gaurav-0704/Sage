@@ -5,7 +5,7 @@
 Runs static analysis on the whole project and prints a tidy report.
 
 ```bash
-# from the project root (D:\Projects\NHS App)
+# from the project root (D:\Projects\Sage)
 python tools/scan.py                  # scan everything
 python tools/scan.py --backend        # Python only
 python tools/scan.py --frontend       # JS only

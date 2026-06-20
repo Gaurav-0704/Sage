@@ -1,9 +1,7 @@
 """
-Notification helper — sends email or logs locally.
-
-If SMTP_HOST + SMTP_USER + SMTP_PASS env vars are set, sends real email
-via smtplib. Otherwise prints to the server console and persists the
-notification in the DB so Owner can audit it.
+I send emails when SMTP_HOST + SMTP_USER + SMTP_PASS are configured,
+and fall back to console logging otherwise. Either way I persist every
+notification in the DB so the owner can audit them.
 """
 
 import os

@@ -1,11 +1,9 @@
 """
-Audit Agent — v0.7.
+Audit Agent â€” v0.7.
 
-Records every state-changing API request (POST / PUT / DELETE / PATCH) to
-the audit_logs table, along with who did it. Owner can browse + filter + search.
-
-Read-side endpoints live here. The actual recording is done by the
-AuditMiddleware which is mounted in main.py.
+I expose the read-side of the audit log — browsing, filtering, and searching.
+The actual recording is done by AuditMiddleware mounted in main.py.
+Only owners can access these endpoints.
 """
 
 from datetime import datetime, timedelta
@@ -58,7 +56,7 @@ def list_actors(
     db: Session = Depends(get_db),
     _owner: models.User = Depends(require_owner),
 ):
-    """Distinct users who made changes — for the filter dropdown."""
+    """Distinct users who made changes â€” for the filter dropdown."""
     cutoff = datetime.utcnow() - timedelta(days=days)
     rows = db.query(
         models.AuditLog.user_id,

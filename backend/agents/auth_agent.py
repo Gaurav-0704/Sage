@@ -1,8 +1,8 @@
 """
 Auth Agent — v0.5.
 
-Adds: signup with role picker (with owner approval queue), forgot/reset
-password with email-delivered 6-digit code, owner approval endpoints.
+I handle signup with a role picker and owner approval queue, forgot/reset
+password with an email-delivered 6-digit code, and owner approval endpoints.
 """
 
 import secrets

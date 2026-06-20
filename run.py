@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-NHS School ERP — single-command launcher.
+Sage — single-command launcher.
 
 Usage:
     python run.py              # boot both backend + frontend
@@ -136,7 +136,7 @@ def run_both():
     ensure_frontend()
 
     print()
-    print(f"{BOLD}NHS School ERP — booting both servers{RESET}")
+    print(f"{BOLD}Sage — booting both servers{RESET}")
     print(f"  api  → http://127.0.0.1:8000  ({DIM}/docs for Swagger{RESET})")
     print(f"  web  → http://localhost:3000")
     print(f"{DIM}Ctrl+C to stop both.{RESET}\n")
@@ -199,7 +199,7 @@ def run_both():
 
 
 def main():
-    ap = argparse.ArgumentParser(description="NHS School ERP launcher")
+    ap = argparse.ArgumentParser(description="Sage — AI-first School ERP launcher")
     ap.add_argument("--setup",   action="store_true", help="Install deps then exit")
     ap.add_argument("--backend", action="store_true", help="Only run the API")
     ap.add_argument("--frontend", action="store_true", help="Only run the UI")

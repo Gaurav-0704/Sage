@@ -1,9 +1,9 @@
 """
 Insights Agent — Proactive AI observations about school health.
 
-Called nightly by the scanner and on-demand by the owner.
-Reads aggregated data, sends it to Claude with a focused analysis prompt,
-and stores structured insights in ai_insights table.
+I get called nightly by the scanner and on-demand by the owner.
+I aggregate school metrics, send them to Claude with a focused analysis
+prompt, and persist the structured results in the ai_insights table.
 """
 
 import json

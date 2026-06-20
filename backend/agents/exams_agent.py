@@ -1,8 +1,8 @@
 """
 Exams Agent — v0.4.
 
-Owner: CRUD on exams + bulk marks entry per class.
-Staff or Owner: read marks + per-student performance.
+I give owners full CRUD on exams and bulk marks entry per class.
+Staff can read marks and per-student performance.
 """
 
 from collections import defaultdict

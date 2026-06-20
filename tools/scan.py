@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-NHS School ERP — dev-time error scanner.
+Sage — dev-time error scanner.
 
 Runs three scans on your code and prints a tidy, color-coded report:
     1. ruff      -> Python lint (style, unused imports, common bugs)
@@ -271,7 +271,7 @@ def report(issues: Iterable[Issue], explain: bool):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Static-analysis scanner for the NHS School ERP.")
+    ap = argparse.ArgumentParser(description="Static-analysis scanner for Sage.")
     ap.add_argument("--backend", action="store_true", help="Only scan Python.")
     ap.add_argument("--frontend", action="store_true", help="Only scan JS/JSX.")
     ap.add_argument("--explain", action="store_true",

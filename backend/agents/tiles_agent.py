@@ -1,8 +1,8 @@
 """
 Tiles Agent — v0.3.
 
-Owner CRUDs the customizable quick-action tiles that appear on the
-Staff dashboard. Staff (and Owner) can read them.
+I manage the customizable quick-action tiles on the staff dashboard.
+Owners control the tile list; staff and owners can read it.
 """
 
 from fastapi import APIRouter, Depends, HTTPException

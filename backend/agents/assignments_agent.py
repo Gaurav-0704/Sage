@@ -1,9 +1,9 @@
 """
 Assignments Agent — v0.5.
 
-Teachers create assignments for the classes they teach.
-Owner can read everything.
-Students see assignments for their own class (via /student/me/assignments).
+I let teachers create assignments for the classes they teach.
+Owners can read everything.
+Students see their own class assignments via /student/me/assignments.
 """
 
 from fastapi import APIRouter, Depends, HTTPException

@@ -1,7 +1,8 @@
 """
 Fees — fee structures, bills, payments, and printable receipts.
 
-Money flow rules (the only ones to memorize):
+I own fee structures, bills, payments, and printable receipts.
+My money flow rules (the only ones that matter):
 
   total_fee_for_student   = sum(this-year fee bills) + last_year_dues
   total_paid_for_student  = sum(payments)
