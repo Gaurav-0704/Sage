@@ -1,0 +1,301 @@
+admission_no,name,student_class,section,aadhaar,dob,gender,parent_name,phone,address,last_year_dues,status,admission_date
+NHS0001,Ishaan Iyer,KG1,A,855132627141,2021-10-01,M,Mrs. Ananya Iyer,6721262745,"#55, Rajajinagar, Mysore",1500.0,active,2026-06-07
+NHS0002,Om Gupta,KG1,A,580606759022,2021-05-12,M,Mrs. Charvi Gupta,7100461129,"#469, Andheri, Bengaluru",0,active,2026-06-02
+NHS0003,Khushi Joshi,KG1,A,351210322850,2021-09-20,F,Mrs. Eva Joshi,6094596621,"#277, Indiranagar, Bengaluru",500.0,active,2026-06-20
+NHS0004,Avni Chopra,KG1,A,292948740188,2022-04-04,F,Mr. Tanish Chopra,6304208047,"#511, Vijayanagar, Pune",0,active,2026-06-15
+NHS0005,Anvi Kamat,KG1,A,664773090888,2021-09-03,F,Mr. Veer Kamat,6098539768,"#63, Whitefield, Pune",2000.0,active,2026-06-06
+NHS0006,Pranav Iyer,KG1,A,477643538785,2022-02-06,M,Mr. Rudra Iyer,6736272728,"#102, Madhapur, Hyderabad",0,active,2026-06-15
+NHS0007,Manav Kapoor,KG1,A,163979197913,2021-12-11,M,Mr. Jay Kapoor,8903145662,"#314, HSR Layout, Chennai",0,active,2026-06-04
+NHS0008,Ananya Menon,KG1,A,244969315046,2021-05-28,F,Mr. Arjun Menon,9833674146,"#150, Bandra, Pune",0,active,2026-06-08
+NHS0009,Harsh Bhargava,KG1,A,814427302071,2022-05-08,M,Mr. Jay Bhargava,6147210722,"#176, Madhapur, Hyderabad",0,active,2026-06-24
+NHS0010,Siya Kapoor,KG1,B,009335202108,2022-04-09,F,Mr. Krishna Kapoor,7536821627,"#28, Baner, Bengaluru",0,active,2026-06-19
+NHS0011,Krishna Khanna,KG1,B,349363450448,2021-12-09,M,Mrs. Meera Khanna,6442187393,"#16, Indiranagar, Pune",0,active,2026-06-24
+NHS0012,Lavanya Singh,KG1,B,319609723794,2022-02-28,F,Mr. Om Singh,8936790276,"#259, Velachery, Mumbai",0,active,2026-06-21
+NHS0013,Charvi Tiwari,KG1,B,315897077344,2022-04-18,F,Mrs. Riya Tiwari,7316409882,"#387, Powai, Mysore",1500.0,active,2026-06-10
+NHS0014,Arjun Hegde,KG1,B,882365110765,2022-03-26,M,Mr. Aarav Hegde,7750951450,"#186, Rajajinagar, Chennai",2000.0,active,2026-06-10
+NHS0015,Mahi Roy,KG1,B,794855611984,2021-07-08,F,Mr. Kabir Roy,8856340096,"#31, Powai, Mysore",0,active,2026-06-23
+NHS0016,Om Pillai,KG1,B,818144669844,2022-01-17,M,Mr. Tanish Pillai,7832042137,"#86, Vijayanagar, Hyderabad",0,active,2026-06-24
+NHS0017,Aditya Chopra,KG1,B,333535109041,2022-04-09,M,Mr. Atharv Chopra,6183214935,"#87, Bandra, Chennai",0,active,2026-06-15
+NHS0018,Riya Desai,KG1,B,645038682644,2021-09-22,F,Mrs. Mahi Desai,6615068187,"#560, Vijayanagar, Bengaluru",500.0,active,2026-06-13
+NHS0019,Kushal Bhargava,KG2,A,682020576797,2020-11-07,M,Mr. Reyansh Bhargava,9603558068,"#233, Velachery, Chennai",500.0,active,2026-06-05
+NHS0020,Inaya Naidu,KG2,A,129614477338,2020-10-27,F,Mrs. Navya Naidu,6891625789,"#257, Madhapur, Chennai",0,active,2026-06-02
+NHS0021,Jay Joshi,KG2,A,411580562918,2021-02-01,M,Mrs. Khushi Joshi,6886905714,"#190, HSR Layout, Mysore",0,active,2026-06-08
+NHS0022,Shivansh Joshi,KG2,A,628777301960,2020-06-15,M,Mr. Aryan Joshi,8082836899,"#244, Indiranagar, Hyderabad",5000.0,active,2026-06-19
+NHS0023,Sai Saxena,KG2,A,728265205907,2021-02-19,M,Mrs. Meera Saxena,6491045633,"#148, Powai, Chennai",0,active,2026-06-12
+NHS0024,Kushal Rao,KG2,A,841074853992,2020-10-14,M,Mr. Atharv Rao,9643377504,"#337, Madhapur, Bengaluru",5000.0,active,2026-06-21
+NHS0025,Yug Trivedi,KG2,A,803729626788,2020-08-25,M,Mrs. Siya Trivedi,6105873908,"#93, Aundh, Mumbai",0,active,2026-06-23
+NHS0026,Kavya Mukherjee,KG2,A,222077570452,2021-02-06,F,Mr. Arjun Mukherjee,6885268716,"#292, HSR Layout, Bengaluru",0,active,2026-06-08
+NHS0027,Riya Shenoy,KG2,A,468342025807,2020-10-13,F,Mrs. Siya Shenoy,6306651613,"#344, Andheri, Hyderabad",0,active,2026-06-23
+NHS0028,Reyansh Malhotra,KG2,A,045376663196,2020-07-22,M,Mrs. Esha Malhotra,8570859708,"#488, Andheri, Hyderabad",0,active,2026-06-07
+NHS0029,Pranavi Trivedi,KG2,A,910078646590,2020-10-26,F,Mrs. Siya Trivedi,9681756033,"#484, Jayanagar, Bengaluru",0,active,2026-06-04
+NHS0030,Sara Mishra,KG2,B,913026784713,2020-06-16,F,Mrs. Tanvi Mishra,8222282392,"#257, Bandra, Hyderabad",500.0,active,2026-06-01
+NHS0031,Krishna Desai,KG2,B,773051170571,2021-05-23,M,Mr. Vivaan Desai,6004889779,"#173, Rajajinagar, Mumbai",0,active,2026-06-11
+NHS0032,Ananya Mukherjee,KG2,B,169388230127,2020-11-25,F,Mrs. Esha Mukherjee,6781432847,"#594, Whitefield, Bengaluru",0,active,2026-06-10
+NHS0033,Nikhil Reddy,KG2,B,402793241832,2020-11-06,M,Mrs. Nisha Reddy,9969922974,"#339, Powai, Pune",0,active,2026-06-13
+NHS0034,Kiara Saxena,KG2,B,426049362077,2020-11-18,F,Mr. Ansh Saxena,9305978956,"#105, Koramangala, Pune",0,active,2026-06-12
+NHS0035,Charvi Rao,KG2,B,313511438036,2020-08-02,F,Mrs. Tara Rao,6779493705,"#271, Anna Nagar, Mumbai",0,active,2026-06-08
+NHS0036,Bhavya Kapoor,KG2,B,274920078496,2021-04-14,F,Mr. Krishna Kapoor,9935511535,"#62, Adyar, Bengaluru",0,active,2026-06-15
+NHS0037,Sara Verma,KG2,B,681631124275,2021-03-08,F,Mr. Rohan Verma,6144264605,"#366, Malleshwaram, Bengaluru",0,active,2026-06-17
+NHS0038,Tanish Mishra,KG2,B,470476553764,2021-02-05,M,Mrs. Jiya Mishra,9705845414,"#301, Koramangala, Hyderabad",500.0,active,2026-06-24
+NHS0039,Anish Menon,KG2,B,442109369551,2020-08-19,M,Mr. Vivaan Menon,8380651214,"#235, Kondapur, Bengaluru",0,active,2026-06-24
+NHS0040,Anish Reddy,KG2,B,492326688499,2020-11-23,M,Mr. Yuvan Reddy,8087903853,"#385, Vijayanagar, Chennai",0,active,2026-06-08
+NHS0041,Nidhi Kapoor,1,A,014771329067,2020-03-03,F,Mr. Vivek Kapoor,7975679660,"#176, Kondapur, Chennai",0,active,2025-06-04
+NHS0042,Tara Bose,1,A,210022506815,2019-08-14,F,Mr. Karthik Bose,7782529510,"#147, Andheri, Pune",0,active,2025-06-04
+NHS0043,Aarush Patel,1,A,744966046804,2020-03-22,M,Mr. Tanish Patel,6301941973,"#372, Andheri, Bengaluru",0,active,2025-06-10
+NHS0044,Veer Das,1,A,338945321233,2020-04-19,M,Mr. Kiaan Das,6593663498,"#186, Banjara Hills, Bengaluru",0,active,2025-06-05
+NHS0045,Ira Roy,1,A,815380688232,2020-01-27,F,Mrs. Avni Roy,8546927653,"#138, Koramangala, Mysore",2000.0,active,2025-06-01
+NHS0046,Ira Rao,1,A,439718699626,2019-06-21,F,Mrs. Pooja Rao,6393025569,"#270, Vijayanagar, Mumbai",0,active,2025-06-21
+NHS0047,Kiaan Mehta,1,A,578214617401,2020-06-03,M,Mr. Rohan Mehta,9765109362,"#116, Powai, Mysore",0,active,2025-06-13
+NHS0048,Nidhi Chatterjee,1,A,346562013672,2020-02-10,F,Mr. Tanish Chatterjee,9785615599,"#113, Anna Nagar, Hyderabad",1000.0,active,2025-06-17
+NHS0049,Bhavya Menon,1,A,333186052708,2020-03-29,F,Mrs. Anvi Menon,6755805875,"#241, Andheri, Pune",0,active,2025-06-11
+NHS0050,Aryan Patel,1,A,170132780556,2020-04-02,M,Mrs. Sara Patel,6880905545,"#230, Jayanagar, Mysore",0,active,2025-06-02
+NHS0051,Navya Das,1,A,675577445002,2020-01-23,F,Mr. Kushal Das,6148752152,"#430, Whitefield, Hyderabad",0,active,2025-06-04
+NHS0052,Veer Menon,1,A,216071124654,2019-08-04,M,Mr. Atharv Menon,6672333266,"#457, Jayanagar, Pune",0,active,2025-06-19
+NHS0053,Kabir Kumar,1,A,803137441324,2019-08-18,M,Mrs. Diya Kumar,9110130826,"#572, Kondapur, Mumbai",0,active,2025-06-10
+NHS0054,Jay Sen,1,A,976290426721,2020-04-08,M,Mr. Reyansh Sen,9338021844,"#430, Banjara Hills, Pune",0,active,2025-06-12
+NHS0055,Aarav Chatterjee,1,B,683602321089,2019-09-24,M,Mr. Aarav Chatterjee,8164723301,"#272, Aundh, Hyderabad",0,active,2025-06-15
+NHS0056,Shaurya Pillai,1,B,121377363450,2020-02-20,M,Mr. Dhruv Pillai,8464909202,"#159, Powai, Hyderabad",500.0,active,2025-06-09
+NHS0057,Mahi Kamat,1,B,061792269446,2019-06-27,F,Mr. Ayaan Kamat,6084991634,"#70, Koramangala, Mysore",0,active,2025-06-09
+NHS0058,Aaradhya Mukherjee,1,B,452564477661,2019-10-24,F,Mrs. Kiara Mukherjee,8864149392,"#286, HSR Layout, Mysore",0,active,2025-06-13
+NHS0059,Inaya Bose,1,B,738581319004,2019-12-10,F,Mr. Sai Bose,7496583297,"#542, Kondapur, Mumbai",0,active,2025-06-22
+NHS0060,Nisha Shenoy,1,B,379979109649,2020-04-17,F,Mr. Pranav Shenoy,6953352934,"#478, Indiranagar, Bengaluru",0,active,2025-06-03
+NHS0061,Aditya Nair,1,B,359449885670,2020-05-10,M,Mrs. Eva Nair,8574988715,"#32, Velachery, Hyderabad",0,active,2025-06-21
+NHS0062,Yuvan Reddy,1,B,470219096515,2020-02-24,M,Mr. Ansh Reddy,9908930087,"#292, Malleshwaram, Chennai",0,active,2025-06-13
+NHS0063,Tara Trivedi,1,B,594422561437,2019-10-10,F,Mr. Rehan Trivedi,7187264648,"#417, Madhapur, Hyderabad",0,active,2025-06-23
+NHS0064,Navya Iyer,1,B,263289490441,2019-08-04,F,Mr. Ansh Iyer,7688369762,"#156, Powai, Hyderabad",0,active,2025-06-24
+NHS0065,Rohan Kapoor,1,B,123283447865,2019-10-30,M,Mr. Vivaan Kapoor,8077880596,"#407, Aundh, Mumbai",7500.0,active,2025-06-01
+NHS0066,Navya Kapoor,1,B,234376100158,2019-12-03,F,Mr. Sai Kapoor,8792219823,"#59, Aundh, Mysore",3500.0,active,2025-06-11
+NHS0067,Inaya Verma,1,B,029101969452,2019-11-19,F,Mr. Ishaan Verma,8456280545,"#448, Baner, Pune",0,active,2025-06-16
+NHS0068,Akhil Singh,1,B,837538047047,2019-06-25,M,Mr. Dhruv Singh,9823251173,"#39, Velachery, Chennai",7500.0,active,2025-06-22
+NHS0069,Trisha Malhotra,2,A,912605189838,2019-02-03,F,Mr. Aditya Malhotra,6824874508,"#325, Madhapur, Hyderabad",0,active,2024-06-25
+NHS0070,Harsh Bhat,2,A,983556494767,2019-05-28,M,Mrs. Esha Bhat,7244224677,"#297, Andheri, Mysore",5000.0,active,2024-06-09
+NHS0071,Kavya Reddy,2,A,462113253896,2019-04-29,F,Mrs. Diya Reddy,8526164265,"#148, Bandra, Mysore",2500.0,active,2024-06-06
+NHS0072,Ishaan Tiwari,2,A,274256674926,2019-05-17,M,Mr. Akhil Tiwari,8788401953,"#296, Wakad, Hyderabad",3500.0,active,2024-06-07
+NHS0073,Vivaan Desai,2,A,339506490086,2019-03-04,M,Mr. Kabir Desai,7337166069,"#252, Rajajinagar, Mumbai",1500.0,active,2024-06-05
+NHS0074,Pooja Trivedi,2,A,330102413928,2018-07-14,F,Mr. Tanish Trivedi,7754812184,"#210, Jayanagar, Bengaluru",1500.0,active,2024-06-10
+NHS0075,Avni Desai,2,A,441394503409,2019-04-17,F,Mr. Rishi Desai,9138303097,"#232, Jayanagar, Hyderabad",0,active,2024-06-16
+NHS0076,Vivek Mishra,2,A,232381618663,2019-02-02,M,Mr. Jay Mishra,9842441507,"#210, HSR Layout, Hyderabad",0,active,2024-06-04
+NHS0077,Disha Chatterjee,2,A,303319750086,2018-06-22,F,Mr. Dhruv Chatterjee,9492818773,"#332, Indiranagar, Pune",2000.0,active,2024-06-25
+NHS0078,Shanaya Kamat,2,A,489782448243,2018-06-25,F,Mrs. Mahi Kamat,8233820070,"#552, Baner, Bengaluru",1000.0,active,2024-06-21
+NHS0079,Mahi Menon,2,A,836477605335,2018-12-18,F,Mr. Kushal Menon,6622136278,"#423, Adyar, Bengaluru",0,active,2024-06-11
+NHS0080,Rishi Roy,2,A,390427036095,2019-03-16,M,Mrs. Anika Roy,8048152298,"#85, Madhapur, Chennai",0,active,2024-06-18
+NHS0081,Nidhi Nair,2,A,348179009990,2018-10-08,F,Mr. Atharv Nair,9201955905,"#76, Kondapur, Pune",0,active,2024-06-08
+NHS0082,Zara Shenoy,2,A,157691834642,2018-12-14,F,Mr. Vivaan Shenoy,6470794345,"#493, Kondapur, Mumbai",0,active,2024-06-11
+NHS0083,Navya Trivedi,2,B,546907349971,2018-10-06,F,Mr. Akhil Trivedi,8598496005,"#446, Baner, Pune",1500.0,active,2024-06-10
+NHS0084,Pooja Reddy,2,B,878352833734,2019-01-27,F,Mrs. Trisha Reddy,6488903490,"#160, Bandra, Mumbai",0,active,2024-06-15
+NHS0085,Kushal Sharma,2,B,134065981577,2019-03-14,M,Mr. Arjun Sharma,9899068357,"#301, Wakad, Pune",0,active,2024-06-02
+NHS0086,Sara Sharma,2,B,168952625843,2018-06-26,F,Mr. Devansh Sharma,6119900055,"#113, Jayanagar, Mysore",0,active,2024-06-14
+NHS0087,Ishaan Chatterjee,2,B,682628664367,2018-12-15,M,Mrs. Esha Chatterjee,8188917538,"#367, Bandra, Pune",0,active,2024-06-04
+NHS0088,Kiaan Singh,2,B,576540724934,2018-06-09,M,Mrs. Anika Singh,9198862682,"#372, Velachery, Mysore",0,active,2024-06-25
+NHS0089,Riya Reddy,2,B,759450657110,2018-09-18,F,Mr. Tanish Reddy,9465372767,"#65, Andheri, Pune",1500.0,active,2024-06-20
+NHS0090,Kavya Reddy,2,B,024153286720,2019-02-23,F,Mr. Aarush Reddy,7414876142,"#49, Kondapur, Pune",3500.0,active,2024-06-07
+NHS0091,Riya Rao,2,B,486567573690,2018-11-09,F,Mrs. Aditi Rao,8079492765,"#442, Andheri, Hyderabad",500.0,active,2024-06-18
+NHS0092,Shaurya Kapoor,2,B,123634431259,2019-01-02,M,Mr. Kiaan Kapoor,9758634214,"#107, Baner, Hyderabad",0,active,2024-06-17
+NHS0093,Sara Mishra,2,B,858297611980,2019-01-30,F,Mr. Karthik Mishra,9216449395,"#136, Madhapur, Mumbai",0,active,2024-06-17
+NHS0094,Saanvi Pai,2,B,916631322366,2019-03-04,F,Mr. Dhruv Pai,7355683562,"#326, Adyar, Hyderabad",0,active,2024-06-18
+NHS0095,Ananya Pillai,2,B,661870138730,2019-05-12,F,Mr. Ansh Pillai,9444175428,"#119, Malleshwaram, Bengaluru",0,active,2024-06-13
+NHS0096,Kavya Kumar,2,B,828499506969,2018-07-07,F,Mr. Yug Kumar,8305814823,"#359, Kondapur, Pune",0,active,2024-06-07
+NHS0097,Mahi Gupta,3,A,817684928033,2018-05-12,F,Mrs. Ishita Gupta,6500631260,"#314, Rajajinagar, Bengaluru",2500.0,active,2023-06-12
+NHS0098,Pari Trivedi,3,A,860377845056,2018-04-05,F,Mrs. Kavya Trivedi,7585051879,"#559, Andheri, Chennai",500.0,active,2023-06-03
+NHS0099,Kiara Desai,3,A,797655069023,2017-10-03,F,Mrs. Anika Desai,6128295553,"#426, Banjara Hills, Mumbai",7500.0,active,2023-06-20
+NHS0100,Navya Saxena,3,A,255313540362,2017-10-31,F,Mr. Akhil Saxena,7100477700,"#505, Andheri, Mumbai",0,active,2023-06-15
+NHS0101,Rehan Menon,3,A,378376185622,2018-02-04,M,Mrs. Anvi Menon,6079341079,"#548, Malleshwaram, Mysore",0,active,2023-06-17
+NHS0102,Advik Bhat,3,A,205785793166,2018-03-31,M,Mrs. Anika Bhat,8359995649,"#433, Madhapur, Pune",500.0,active,2023-06-15
+NHS0103,Ayaan Khanna,3,A,002494888332,2017-11-21,M,Mrs. Tanvi Khanna,6792866705,"#308, Banjara Hills, Mumbai",7500.0,active,2023-06-25
+NHS0104,Kiaan Shenoy,3,A,261730313376,2018-05-17,M,Mrs. Shanaya Shenoy,8005298970,"#175, Rajajinagar, Hyderabad",0,active,2023-06-24
+NHS0105,Shanaya Chatterjee,3,A,710609772089,2017-07-10,F,Mr. Arjun Chatterjee,7003343950,"#520, Jayanagar, Mumbai",0,active,2023-06-14
+NHS0106,Disha Pai,3,A,512901380524,2017-12-10,F,Mrs. Ira Pai,9360698572,"#71, Vijayanagar, Mumbai",0,active,2023-06-07
+NHS0107,Devansh Mishra,3,A,130126567576,2017-06-29,M,Mrs. Myra Mishra,9171339372,"#120, Adyar, Hyderabad",500.0,active,2023-06-02
+NHS0108,Trisha Verma,3,A,791543398691,2017-11-13,F,Mr. Devansh Verma,8403394531,"#383, Madhapur, Bengaluru",0,active,2023-06-14
+NHS0109,Pranavi Mukherjee,3,A,882289994333,2017-10-07,F,Mr. Arjun Mukherjee,8956508434,"#15, Velachery, Mumbai",0,active,2023-06-14
+NHS0110,Tanvi Khanna,3,A,024452548533,2018-03-07,F,Mrs. Mahi Khanna,7965284338,"#126, Velachery, Mumbai",2000.0,active,2023-06-07
+NHS0111,Ananya Shah,3,A,726991552793,2017-12-24,F,Mrs. Avni Shah,7806184459,"#154, Madhapur, Chennai",2500.0,active,2023-06-17
+NHS0112,Khushi Bhat,3,B,561985536514,2018-01-06,F,Mr. Kiaan Bhat,7336506283,"#430, Baner, Bengaluru",1500.0,active,2023-06-25
+NHS0113,Veer Joshi,3,B,617879004189,2017-06-22,M,Mr. Yuvan Joshi,7295080961,"#498, Baner, Pune",0,active,2023-06-19
+NHS0114,Saanvi Kapoor,3,B,588482096660,2017-07-11,F,Mr. Karthik Kapoor,8719769316,"#200, Koramangala, Pune",0,active,2023-06-13
+NHS0115,Myra Gupta,3,B,026550073731,2017-06-30,F,Mr. Harsh Gupta,6806071894,"#433, Anna Nagar, Bengaluru",0,active,2023-06-21
+NHS0116,Atharv Das,3,B,223733186441,2018-03-14,M,Mrs. Sara Das,8600678027,"#178, Koramangala, Pune",7500.0,active,2023-06-24
+NHS0117,Devansh Reddy,3,B,436524756427,2017-12-17,M,Mr. Vivaan Reddy,8391623016,"#543, Malleshwaram, Bengaluru",0,active,2023-06-25
+NHS0118,Vivaan Kumar,3,B,979794060436,2018-02-17,M,Mr. Aditya Kumar,7823856837,"#253, Whitefield, Mysore",0,active,2023-06-25
+NHS0119,Mahi Kamat,3,B,289930904603,2018-01-27,F,Mr. Kiaan Kamat,8940595379,"#299, Kondapur, Pune",2500.0,active,2023-06-22
+NHS0120,Sai Menon,3,B,360861860393,2017-11-19,M,Mrs. Pooja Menon,8866687086,"#517, Adyar, Chennai",0,active,2023-06-22
+NHS0121,Ira Chopra,3,B,852131688847,2017-10-13,F,Mrs. Aditi Chopra,6302689035,"#152, Madhapur, Pune",0,active,2023-06-04
+NHS0122,Ananya Desai,3,B,814551240569,2017-12-30,F,Mr. Vivaan Desai,9689273216,"#521, Anna Nagar, Hyderabad",0,active,2023-06-16
+NHS0123,Avni Malhotra,3,B,160735782388,2017-07-09,F,Mrs. Shanaya Malhotra,8855181397,"#66, Madhapur, Chennai",0,active,2023-06-04
+NHS0124,Dhruv Desai,3,B,151244403422,2017-10-06,M,Mrs. Aanya Desai,7086335800,"#37, Kondapur, Mysore",0,active,2023-06-11
+NHS0125,Ishita Gupta,3,B,327331844404,2017-11-28,F,Mr. Aarav Gupta,8750026373,"#467, Kondapur, Chennai",0,active,2023-06-17
+NHS0126,Kabir Mehta,3,B,563466524293,2017-05-26,M,Mr. Rehan Mehta,7935306593,"#533, Baner, Bengaluru",2500.0,active,2023-06-22
+NHS0127,Kiaan Chatterjee,4,A,013436230395,2016-06-30,M,Mr. Kabir Chatterjee,6137426848,"#106, Baner, Mysore",1000.0,active,2022-06-10
+NHS0128,Rehan Saxena,4,A,462097292652,2017-04-15,M,Mr. Aarav Saxena,6730541733,"#390, Whitefield, Hyderabad",2000.0,active,2022-06-01
+NHS0129,Aditi Verma,4,A,334915774089,2017-03-31,F,Mr. Nikhil Verma,7867563203,"#550, Rajajinagar, Bengaluru",0,active,2022-06-18
+NHS0130,Devansh Hegde,4,A,620207007207,2016-09-12,M,Mr. Vivaan Hegde,6326732805,"#498, Madhapur, Hyderabad",0,active,2022-06-17
+NHS0131,Aarav Verma,4,A,349076986044,2016-12-01,M,Mrs. Kiara Verma,9353960026,"#222, HSR Layout, Chennai",2000.0,active,2022-06-24
+NHS0132,Yuvan Hegde,4,A,291662609542,2016-11-25,M,Mr. Aditya Hegde,7699049598,"#506, Jayanagar, Mysore",0,active,2022-06-25
+NHS0133,Krishna Rao,4,A,663160692586,2016-10-12,M,Mr. Aryan Rao,7310095896,"#322, HSR Layout, Mysore",0,active,2022-06-02
+NHS0134,Yuvan Bhat,4,A,374364595247,2017-04-11,M,Mrs. Charvi Bhat,6343331102,"#141, HSR Layout, Chennai",0,active,2022-06-25
+NHS0135,Esha Kamat,4,A,610534145631,2016-09-21,F,Mr. Ayaan Kamat,9518286782,"#12, Rajajinagar, Hyderabad",0,active,2022-06-11
+NHS0136,Saanvi Chopra,4,A,324134225663,2017-03-12,F,Mrs. Nidhi Chopra,9009547514,"#312, Koramangala, Chennai",3500.0,active,2022-06-01
+NHS0137,Ishaan Rao,4,A,438402355618,2017-03-30,M,Mrs. Ira Rao,6758441238,"#557, HSR Layout, Mumbai",0,active,2022-06-13
+NHS0138,Eva Roy,4,A,671529662056,2016-08-19,F,Mr. Rohan Roy,9190034500,"#416, Kondapur, Chennai",1500.0,active,2022-06-25
+NHS0139,Tanish Sharma,4,A,564673552644,2016-09-08,M,Mrs. Nisha Sharma,6319432993,"#78, Whitefield, Chennai",0,active,2022-06-06
+NHS0140,Yuvan Verma,4,A,779473902137,2017-01-20,M,Mrs. Khushi Verma,9868161169,"#113, HSR Layout, Mumbai",0,active,2022-06-01
+NHS0141,Veer Reddy,4,B,664044163882,2017-03-30,M,Mr. Aryan Reddy,9774292351,"#239, Malleshwaram, Pune",0,active,2022-06-08
+NHS0142,Jiya Joshi,4,B,929724049183,2017-01-22,F,Mrs. Charvi Joshi,6873582380,"#53, Anna Nagar, Mysore",0,active,2022-06-22
+NHS0143,Reyansh Gupta,4,B,962246144092,2017-03-24,M,Mrs. Navya Gupta,6664630147,"#295, Velachery, Mumbai",0,active,2022-06-18
+NHS0144,Sara Pillai,4,B,363119933423,2016-05-14,F,Mr. Veer Pillai,9524342147,"#248, Andheri, Chennai",0,active,2022-06-25
+NHS0145,Sai Chopra,4,B,020283322540,2017-03-02,M,Mr. Om Chopra,9793508057,"#189, Koramangala, Mysore",0,active,2022-06-10
+NHS0146,Anika Chopra,4,B,784889555276,2016-09-16,F,Mr. Akhil Chopra,7204704439,"#406, Koramangala, Mumbai",0,active,2022-06-25
+NHS0147,Krishna Kapoor,4,B,741975837208,2017-02-26,M,Mr. Advik Kapoor,7693957538,"#60, Anna Nagar, Bengaluru",0,active,2022-06-16
+NHS0148,Rohan Nair,4,B,883017395857,2016-06-15,M,Mr. Karthik Nair,6660084730,"#22, Adyar, Mysore",5000.0,active,2022-06-10
+NHS0149,Aryan Pai,4,B,059423211098,2016-12-24,M,Mr. Shivansh Pai,9723553877,"#411, Indiranagar, Mysore",0,active,2022-06-10
+NHS0150,Pooja Chatterjee,4,B,067902070219,2017-02-11,F,Mrs. Meera Chatterjee,8677162811,"#72, Anna Nagar, Bengaluru",0,active,2022-06-06
+NHS0151,Dhruv Patel,4,B,487957227662,2017-05-05,M,Mr. Krishna Patel,9132411582,"#456, Vijayanagar, Hyderabad",0,active,2022-06-04
+NHS0152,Kiaan Menon,4,B,526509303991,2017-03-27,M,Mr. Harsh Menon,7400323677,"#68, Malleshwaram, Hyderabad",1000.0,active,2022-06-23
+NHS0153,Veer Gupta,4,B,714847043792,2016-11-09,M,Mr. Anish Gupta,8672630066,"#67, Velachery, Bengaluru",0,active,2022-06-24
+NHS0154,Ishaan Bhargava,4,B,116763160217,2017-02-01,M,Mr. Vivek Bhargava,6143064465,"#327, Powai, Mysore",0,active,2022-06-22
+NHS0155,Zara Pillai,5,A,636953136188,2016-02-08,F,Mrs. Siya Pillai,6259347117,"#517, Wakad, Hyderabad",0,active,2021-06-01
+NHS0156,Vihaan Bhat,5,A,973060008303,2015-12-19,M,Mr. Ansh Bhat,6312429147,"#534, Baner, Bengaluru",0,active,2021-06-21
+NHS0157,Pooja Mishra,5,A,780251258721,2016-03-31,F,Mrs. Myra Mishra,7445014767,"#112, Rajajinagar, Chennai",0,active,2021-06-18
+NHS0158,Esha Singh,5,A,032453919160,2015-10-25,F,Mr. Tanish Singh,8353535199,"#188, Andheri, Mumbai",0,active,2021-06-09
+NHS0159,Aarav Patel,5,A,054403726361,2015-07-26,M,Mr. Kushal Patel,6921080131,"#522, Jayanagar, Pune",0,active,2021-06-20
+NHS0160,Pranavi Saxena,5,A,214602908817,2016-03-14,F,Mrs. Sara Saxena,6443250264,"#442, Wakad, Mumbai",7500.0,active,2021-06-02
+NHS0161,Krishna Shah,5,A,404865527465,2015-08-06,M,Mrs. Anvi Shah,9226546620,"#509, Whitefield, Chennai",5000.0,active,2021-06-03
+NHS0162,Rudra Desai,5,A,561244984074,2015-09-07,M,Mr. Tanish Desai,7485754339,"#126, Vijayanagar, Mysore",500.0,active,2021-06-18
+NHS0163,Diya Bhat,5,A,751652482054,2015-10-06,F,Mrs. Lavanya Bhat,9881141235,"#477, Velachery, Hyderabad",0,active,2021-06-09
+NHS0164,Yug Desai,5,A,791124371635,2016-04-09,O,Mrs. Lavanya Desai,7925214917,"#252, Madhapur, Mysore",0,active,2021-06-24
+NHS0165,Arjun Sen,5,A,536559138967,2015-05-22,M,Mr. Shaurya Sen,6260315601,"#346, Andheri, Chennai",3500.0,active,2021-06-10
+NHS0166,Charvi Bose,5,A,364054076433,2015-09-21,F,Mrs. Meera Bose,7285370874,"#156, Rajajinagar, Pune",0,active,2021-06-25
+NHS0167,Shaurya Kapoor,5,A,814415297774,2016-01-09,M,Mr. Krishna Kapoor,6712689500,"#88, Madhapur, Mysore",0,active,2021-06-02
+NHS0168,Trisha Patel,5,A,035725530648,2016-04-07,F,Mr. Ishaan Patel,9685723994,"#31, Koramangala, Mumbai",0,active,2021-06-02
+NHS0169,Inaya Pai,5,B,772679770154,2016-03-06,F,Mr. Jay Pai,6825977964,"#501, Banjara Hills, Chennai",0,active,2021-06-09
+NHS0170,Ishaan Chatterjee,5,B,898329933753,2016-02-24,M,Mr. Rudra Chatterjee,8739313303,"#363, Wakad, Mumbai",0,active,2021-06-22
+NHS0171,Rehan Desai,5,B,178283025666,2016-02-03,M,Mr. Reyansh Desai,7584919656,"#309, Rajajinagar, Mysore",0,active,2021-06-14
+NHS0172,Anish Mehta,5,B,006613871966,2015-10-15,M,Mr. Ayaan Mehta,7838164031,"#402, Banjara Hills, Pune",1500.0,active,2021-06-16
+NHS0173,Diya Verma,5,B,833295112199,2016-04-04,F,Mrs. Nidhi Verma,8415386448,"#245, Andheri, Hyderabad",0,active,2021-06-01
+NHS0174,Avni Bhat,5,B,299181600522,2015-08-14,F,Mr. Reyansh Bhat,8111283375,"#104, Kondapur, Mysore",2000.0,active,2021-06-20
+NHS0175,Aaradhya Mukherjee,5,B,122102757296,2016-04-06,F,Mr. Yuvan Mukherjee,9572046106,"#180, Madhapur, Mumbai",0,active,2021-06-24
+NHS0176,Yug Bhat,5,B,825389879386,2016-04-13,M,Mr. Akhil Bhat,8621521524,"#377, Anna Nagar, Chennai",0,active,2021-06-02
+NHS0177,Riya Chatterjee,5,B,191499384952,2015-08-30,F,Mr. Reyansh Chatterjee,7976850277,"#74, Banjara Hills, Mumbai",0,active,2021-06-09
+NHS0178,Devansh Pillai,5,B,501617897080,2015-11-03,M,Mrs. Navya Pillai,9515810066,"#433, Andheri, Hyderabad",5000.0,active,2021-06-15
+NHS0179,Anish Pai,5,B,139212696684,2015-06-13,M,Mr. Kabir Pai,9068375837,"#182, Banjara Hills, Bengaluru",0,active,2021-06-05
+NHS0180,Manav Kumar,5,B,948449769245,2016-01-12,M,Mrs. Kavya Kumar,7828954675,"#375, Kondapur, Pune",0,active,2021-06-11
+NHS0181,Saanvi Naidu,5,B,697835971449,2015-05-26,F,Mr. Aarav Naidu,6426004030,"#361, Indiranagar, Chennai",0,active,2021-06-08
+NHS0182,Nikhil Shenoy,5,B,035172947888,2015-11-17,O,Mr. Ayaan Shenoy,8326068585,"#410, Indiranagar, Bengaluru",1500.0,active,2021-06-14
+NHS0183,Rudra Naidu,6,A,558827863256,2015-04-22,M,Mr. Harsh Naidu,7148592233,"#530, Andheri, Hyderabad",0,active,2020-06-07
+NHS0184,Aarush Bhargava,6,A,170916857688,2014-07-18,M,Mr. Rishi Bhargava,7075360382,"#593, Madhapur, Bengaluru",0,active,2020-06-07
+NHS0185,Kabir Bhat,6,A,422563903856,2015-01-02,M,Mrs. Nidhi Bhat,7266432342,"#441, Rajajinagar, Mumbai",0,active,2020-06-21
+NHS0186,Sai Sen,6,A,159233838724,2014-07-26,M,Mr. Shaurya Sen,6580454538,"#372, Powai, Bengaluru",0,active,2020-06-22
+NHS0187,Aryan Kapoor,6,A,585106828015,2015-04-22,M,Mr. Jay Kapoor,7230025550,"#596, Baner, Hyderabad",5000.0,active,2020-06-13
+NHS0188,Diya Kamat,6,A,905696937801,2015-05-13,F,Mr. Shaurya Kamat,8727556949,"#68, Jayanagar, Mysore",0,active,2020-06-15
+NHS0189,Aaradhya Bhargava,6,A,732786838359,2014-10-08,F,Mr. Kushal Bhargava,6916740548,"#281, Madhapur, Hyderabad",2000.0,active,2020-06-18
+NHS0190,Yuvan Mukherjee,6,A,458684726870,2015-05-13,M,Mrs. Khushi Mukherjee,7134685116,"#145, Baner, Chennai",0,active,2020-06-04
+NHS0191,Nidhi Tiwari,6,A,590049031262,2015-04-29,F,Mrs. Lavanya Tiwari,6457055705,"#494, Madhapur, Pune",0,active,2020-06-13
+NHS0192,Nikhil Das,6,A,182168102930,2014-07-31,M,Mr. Tanish Das,8328773901,"#573, Jayanagar, Mumbai",0,active,2020-06-17
+NHS0193,Anish Shenoy,6,A,899014668868,2015-02-15,M,Mr. Veer Shenoy,7893378384,"#298, Velachery, Mysore",0,active,2020-06-24
+NHS0194,Arjun Menon,6,A,486716600605,2015-01-25,M,Mr. Rehan Menon,7881736103,"#72, Jayanagar, Hyderabad",0,active,2020-06-22
+NHS0195,Charvi Pai,6,A,319024028976,2015-05-14,F,Mrs. Myra Pai,6452248772,"#599, Adyar, Chennai",0,active,2020-06-23
+NHS0196,Eva Singh,6,B,151834884289,2014-09-16,F,Mrs. Tara Singh,7435003163,"#563, Wakad, Mumbai",0,active,2020-06-16
+NHS0197,Ira Gupta,6,B,147934659577,2015-01-31,F,Mr. Kabir Gupta,6105512874,"#329, HSR Layout, Chennai",0,active,2020-06-10
+NHS0198,Nisha Bhargava,6,B,193939983546,2015-04-21,F,Mrs. Jiya Bhargava,7386307124,"#566, Aundh, Mumbai",0,active,2020-06-06
+NHS0199,Pooja Joshi,6,B,997280232192,2014-12-13,F,Mr. Harsh Joshi,6839031291,"#556, Anna Nagar, Hyderabad",0,active,2020-06-02
+NHS0200,Aditi Singh,6,B,563216758843,2015-02-22,F,Mr. Manav Singh,6043756979,"#372, Anna Nagar, Mysore",0,active,2020-06-18
+NHS0201,Dhruv Tiwari,6,B,270591635830,2014-07-23,M,Mrs. Pari Tiwari,7772404330,"#311, Kondapur, Mysore",2000.0,active,2020-06-10
+NHS0202,Jay Kapoor,6,B,145290426819,2014-09-30,M,Mr. Akhil Kapoor,7333026905,"#374, Baner, Pune",2500.0,active,2020-06-04
+NHS0203,Advik Hegde,6,B,107800311100,2015-03-03,M,Mr. Kabir Hegde,8635431234,"#478, Powai, Mumbai",500.0,active,2020-06-18
+NHS0204,Bhavya Mishra,6,B,943108082908,2015-05-11,F,Mr. Pranav Mishra,8234616337,"#473, Kondapur, Mumbai",2000.0,active,2020-06-21
+NHS0205,Shivansh Bhargava,6,B,279888931825,2014-10-14,M,Mr. Anish Bhargava,9697941960,"#262, Madhapur, Hyderabad",0,active,2020-06-22
+NHS0206,Zara Kapoor,6,B,726785348556,2014-09-22,F,Mr. Dhruv Kapoor,7208889656,"#235, Aundh, Hyderabad",0,active,2020-06-07
+NHS0207,Tanish Naidu,6,B,059375747558,2015-04-25,M,Mr. Ayaan Naidu,7182587157,"#101, Madhapur, Hyderabad",0,active,2020-06-14
+NHS0208,Myra Bose,6,B,991095479122,2014-11-29,F,Mrs. Nidhi Bose,7976198659,"#320, Powai, Mumbai",0,active,2020-06-07
+NHS0209,Kushal Hegde,7,A,679027653342,2013-10-12,M,Mrs. Anvi Hegde,7089557057,"#343, Kondapur, Chennai",0,active,2019-06-19
+NHS0210,Ishita Gupta,7,A,474437014342,2013-12-30,F,Mrs. Kiara Gupta,7226077242,"#87, Andheri, Pune",1000.0,active,2019-06-13
+NHS0211,Nisha Desai,7,A,639852189939,2014-03-22,F,Mr. Reyansh Desai,7229777783,"#128, Kondapur, Chennai",0,active,2019-06-12
+NHS0212,Aryan Malhotra,7,A,311589849599,2013-07-01,M,Mrs. Bhavya Malhotra,8174337291,"#389, Banjara Hills, Mysore",7500.0,active,2019-06-18
+NHS0213,Myra Rao,7,A,743267425300,2013-12-16,F,Mr. Vivaan Rao,8034776184,"#347, Banjara Hills, Mysore",3500.0,active,2019-06-23
+NHS0214,Esha Pillai,7,A,733718251551,2013-07-28,F,Mr. Advik Pillai,8209007554,"#51, Andheri, Hyderabad",0,active,2019-06-11
+NHS0215,Charvi Gupta,7,A,152338743146,2014-03-15,F,Mr. Vivek Gupta,9987266543,"#447, Kondapur, Chennai",0,active,2019-06-21
+NHS0216,Nidhi Gupta,7,A,688111645081,2013-08-08,F,Mr. Om Gupta,9731528322,"#361, Kondapur, Mumbai",0,active,2019-06-08
+NHS0217,Anvi Bose,7,A,647639758349,2013-08-30,F,Mrs. Lavanya Bose,8299884248,"#375, Kondapur, Bengaluru",0,active,2019-06-20
+NHS0218,Shaurya Joshi,7,A,181862347601,2013-07-30,M,Mrs. Gauri Joshi,7414180581,"#328, Koramangala, Pune",2500.0,active,2019-06-11
+NHS0219,Shaurya Verma,7,A,944413871697,2014-01-31,M,Mrs. Riya Verma,9222753471,"#402, Banjara Hills, Pune",0,active,2019-06-10
+NHS0220,Gauri Malhotra,7,A,307371745461,2013-11-07,F,Mrs. Aditi Malhotra,6556742236,"#181, Bandra, Chennai",500.0,active,2019-06-02
+NHS0221,Om Malhotra,7,B,649168274654,2014-02-28,M,Mrs. Nisha Malhotra,7493744182,"#566, Vijayanagar, Mysore",0,active,2019-06-07
+NHS0222,Shaurya Verma,7,B,004455274044,2013-10-20,M,Mr. Aditya Verma,9557527630,"#79, Banjara Hills, Hyderabad",0,active,2019-06-05
+NHS0223,Yuvan Kumar,7,B,986433374252,2013-05-25,M,Mrs. Tanvi Kumar,9640262025,"#414, Baner, Chennai",0,active,2019-06-07
+NHS0224,Ira Bhat,7,B,378555780565,2013-11-10,F,Mr. Atharv Bhat,6278838119,"#337, Madhapur, Hyderabad",1000.0,active,2019-06-25
+NHS0225,Vivaan Reddy,7,B,452683604798,2013-12-07,M,Mr. Aryan Reddy,8845588565,"#144, Bandra, Pune",2500.0,active,2019-06-16
+NHS0226,Shaurya Verma,7,B,897224006902,2013-11-11,M,Mr. Atharv Verma,6177633094,"#92, Adyar, Mysore",3500.0,active,2019-06-22
+NHS0227,Rishi Menon,7,B,494659973000,2014-01-04,M,Mr. Tanish Menon,8548499179,"#112, Baner, Chennai",0,active,2019-06-06
+NHS0228,Pranav Roy,7,B,138055829790,2013-12-17,M,Mr. Arjun Roy,8221834318,"#338, Vijayanagar, Bengaluru",0,active,2019-06-01
+NHS0229,Aarav Menon,7,B,130644632836,2014-01-11,M,Mrs. Shanaya Menon,9216482493,"#450, Velachery, Mysore",0,active,2019-06-05
+NHS0230,Kiaan Pillai,7,B,883191916378,2013-10-24,M,Mr. Shivansh Pillai,7828069180,"#342, Baner, Mysore",0,active,2019-06-08
+NHS0231,Rudra Kumar,7,B,607555465579,2014-05-04,M,Mrs. Eva Kumar,6617744587,"#110, Adyar, Bengaluru",2500.0,active,2019-06-21
+NHS0232,Anish Kamat,7,B,848188696070,2014-03-06,M,Mr. Rehan Kamat,6256815382,"#252, Malleshwaram, Bengaluru",2000.0,active,2019-06-05
+NHS0233,Manav Pai,8,A,665182181539,2012-12-23,M,Mr. Arjun Pai,6140942765,"#507, Wakad, Mysore",0,active,2018-06-17
+NHS0234,Navya Iyer,8,A,418975552575,2012-08-22,F,Mr. Rohan Iyer,9592947127,"#36, Baner, Hyderabad",5000.0,active,2018-06-11
+NHS0235,Tanish Mishra,8,A,780184534251,2013-05-16,M,Mrs. Tanvi Mishra,8745873030,"#373, Baner, Hyderabad",2000.0,active,2018-06-19
+NHS0236,Disha Das,8,A,318626024452,2013-04-04,F,Mr. Shaurya Das,7478125938,"#370, Baner, Bengaluru",0,active,2018-06-20
+NHS0237,Krishna Pillai,8,A,621510375741,2012-12-18,M,Mrs. Navya Pillai,6060093932,"#528, Malleshwaram, Chennai",0,active,2018-06-09
+NHS0238,Jiya Iyer,8,A,080193237357,2013-04-26,F,Mr. Ishaan Iyer,8292154642,"#98, Baner, Hyderabad",3500.0,active,2018-06-19
+NHS0239,Rehan Kapoor,8,A,580693440456,2012-10-14,M,Mrs. Aditi Kapoor,6607475343,"#6, Velachery, Hyderabad",0,active,2018-06-07
+NHS0240,Yuvan Roy,8,A,863745936502,2013-03-30,O,Mrs. Eva Roy,7526427407,"#597, Indiranagar, Pune",0,active,2018-06-16
+NHS0241,Inaya Shenoy,8,A,491480604595,2012-10-16,F,Mr. Karthik Shenoy,9098916554,"#292, Banjara Hills, Bengaluru",0,active,2018-06-13
+NHS0242,Disha Chopra,8,A,820605804746,2013-02-16,F,Mr. Yug Chopra,7684899624,"#409, Andheri, Chennai",0,active,2018-06-06
+NHS0243,Anish Das,8,A,089885051080,2013-03-24,M,Mr. Rudra Das,9157521477,"#357, Rajajinagar, Pune",0,active,2018-06-15
+NHS0244,Yug Reddy,8,A,373130011433,2013-03-28,M,Mr. Akhil Reddy,6540937231,"#122, Andheri, Chennai",0,active,2018-06-13
+NHS0245,Aanya Desai,8,B,568623540414,2013-03-08,F,Mr. Kiaan Desai,8633984060,"#407, Aundh, Hyderabad",0,active,2018-06-19
+NHS0246,Sara Nair,8,B,327452486270,2012-08-06,F,Mrs. Nidhi Nair,9129160850,"#534, Banjara Hills, Bengaluru",0,active,2018-06-11
+NHS0247,Jiya Hegde,8,B,641411569889,2012-09-04,F,Mrs. Pari Hegde,6158514900,"#462, Anna Nagar, Chennai",0,active,2018-06-13
+NHS0248,Tanvi Gupta,8,B,701457669661,2013-03-02,F,Mrs. Shanaya Gupta,8202553875,"#85, Adyar, Mysore",2500.0,active,2018-06-02
+NHS0249,Nikhil Pillai,8,B,905412948215,2012-11-06,M,Mrs. Meera Pillai,6620411348,"#127, Indiranagar, Chennai",0,active,2018-06-22
+NHS0250,Kiara Pillai,8,B,962499383684,2012-10-26,F,Mr. Kushal Pillai,7399473925,"#103, Jayanagar, Mysore",1500.0,active,2018-06-21
+NHS0251,Rohan Sharma,8,B,125068172003,2013-04-09,M,Mr. Kabir Sharma,6060148850,"#536, HSR Layout, Bengaluru",2500.0,active,2018-06-05
+NHS0252,Trisha Bhargava,8,B,839780839132,2012-06-15,F,Mr. Akhil Bhargava,7775189683,"#5, Baner, Mysore",0,active,2018-06-09
+NHS0253,Dhruv Gupta,8,B,080189926302,2013-03-02,M,Mrs. Kiara Gupta,7634570057,"#553, Baner, Pune",0,active,2018-06-20
+NHS0254,Siya Chatterjee,8,B,381455974160,2012-08-12,F,Mrs. Esha Chatterjee,7844962173,"#519, Velachery, Chennai",0,active,2018-06-02
+NHS0255,Manav Das,8,B,567896699943,2013-02-09,M,Mrs. Myra Das,7051239486,"#300, Madhapur, Pune",0,active,2018-06-12
+NHS0256,Sara Pai,8,B,058684556907,2013-02-25,F,Mr. Shivansh Pai,8326755054,"#244, Vijayanagar, Chennai",0,active,2018-06-02
+NHS0257,Yug Chopra,9,A,383340158904,2011-12-31,M,Mrs. Bhavya Chopra,9981713174,"#566, Bandra, Chennai",0,active,2017-06-09
+NHS0258,Anvi Roy,9,A,365990423254,2011-07-22,O,Mr. Jay Roy,6787022105,"#273, Vijayanagar, Chennai",0,active,2017-06-05
+NHS0259,Trisha Chatterjee,9,A,438689255857,2011-11-23,F,Mrs. Tanvi Chatterjee,7641839072,"#309, Koramangala, Hyderabad",2000.0,active,2017-06-01
+NHS0260,Ananya Hegde,9,A,321500925543,2012-02-07,F,Mr. Veer Hegde,6553283709,"#382, Baner, Bengaluru",0,active,2017-06-22
+NHS0261,Kiara Nair,9,A,002532738929,2012-04-20,F,Mr. Krishna Nair,9963770255,"#104, Indiranagar, Mumbai",0,active,2017-06-24
+NHS0262,Nidhi Verma,9,A,162169658368,2011-08-20,F,Mr. Kiaan Verma,9887010949,"#35, Vijayanagar, Bengaluru",0,active,2017-06-05
+NHS0263,Krishna Menon,9,A,859306475418,2011-12-17,M,Mr. Vivek Menon,8544805503,"#402, Malleshwaram, Pune",0,active,2017-06-04
+NHS0264,Nikhil Shenoy,9,A,973508752660,2012-06-15,M,Mr. Aditya Shenoy,7323890292,"#327, Aundh, Pune",0,active,2017-06-17
+NHS0265,Navya Reddy,9,A,694030583844,2012-04-20,F,Mr. Aarush Reddy,9738528843,"#294, Baner, Mysore",0,active,2017-06-19
+NHS0266,Veer Saxena,9,A,570470472251,2012-01-01,M,Mrs. Mahi Saxena,6046267185,"#389, Anna Nagar, Mumbai",1500.0,active,2017-06-03
+NHS0267,Jiya Bhargava,9,A,955193481633,2011-07-21,F,Mr. Shivansh Bhargava,9761724185,"#29, Malleshwaram, Bengaluru",0,active,2017-06-10
+NHS0268,Aditi Pillai,9,B,187045272740,2012-05-13,F,Mrs. Saanvi Pillai,8921468663,"#496, Baner, Mysore",0,active,2017-06-08
+NHS0269,Inaya Mehta,9,B,372482639317,2012-01-06,F,Mr. Veer Mehta,8168925821,"#446, Banjara Hills, Chennai",5000.0,active,2017-06-23
+NHS0270,Mahi Saxena,9,B,059348619143,2011-07-29,F,Mrs. Tanvi Saxena,7465141953,"#459, Bandra, Mumbai",2000.0,active,2017-06-03
+NHS0271,Jiya Khanna,9,B,787413982233,2011-11-25,F,Mrs. Anika Khanna,7091045921,"#122, Aundh, Mysore",3500.0,active,2017-06-02
+NHS0272,Ayaan Verma,9,B,158776504184,2011-08-19,M,Mr. Arjun Verma,9546324779,"#285, Wakad, Mysore",1500.0,active,2017-06-17
+NHS0273,Nidhi Sen,9,B,944406054913,2011-08-17,F,Mrs. Esha Sen,7464460605,"#392, Bandra, Pune",0,active,2017-06-04
+NHS0274,Ira Joshi,9,B,083217384531,2012-04-14,F,Mr. Sai Joshi,8953773014,"#435, Andheri, Chennai",500.0,active,2017-06-20
+NHS0275,Yuvan Tiwari,9,B,548773496632,2011-08-10,M,Mr. Aditya Tiwari,6111487309,"#3, Velachery, Hyderabad",0,active,2017-06-03
+NHS0276,Anika Roy,9,B,436896830932,2012-04-24,F,Mr. Harsh Roy,6904797331,"#8, Adyar, Mysore",0,active,2017-06-21
+NHS0277,Akhil Gupta,9,B,707601495530,2011-10-11,M,Mr. Aarav Gupta,6551347777,"#91, Rajajinagar, Mysore",500.0,active,2017-06-14
+NHS0278,Lavanya Kapoor,9,B,321681364191,2012-03-17,F,Mr. Dhruv Kapoor,6511678441,"#213, Aundh, Bengaluru",3500.0,active,2017-06-08
+NHS0279,Ayaan Bose,10,A,202086462393,2010-09-23,M,Mr. Jay Bose,7464134666,"#297, Anna Nagar, Mysore",0,active,2016-06-15
+NHS0280,Inaya Gupta,10,A,451597602248,2011-04-06,F,Mrs. Aaradhya Gupta,9327114888,"#18, Andheri, Bengaluru",0,active,2016-06-12
+NHS0281,Rehan Kapoor,10,A,732814665880,2010-07-14,M,Mr. Yuvan Kapoor,6218964773,"#456, Banjara Hills, Hyderabad",2000.0,active,2016-06-16
+NHS0282,Anish Shah,10,A,020980267755,2010-10-04,M,Mrs. Kavya Shah,7582455811,"#589, Wakad, Hyderabad",0,active,2016-06-18
+NHS0283,Harsh Naidu,10,A,089349819663,2011-04-14,M,Mr. Ayaan Naidu,7924336048,"#470, Andheri, Mumbai",0,active,2016-06-01
+NHS0284,Zara Khanna,10,A,136680944370,2010-10-27,F,Mr. Shaurya Khanna,9685125674,"#449, Aundh, Bengaluru",0,active,2016-06-09
+NHS0285,Tanvi Bhargava,10,A,902250541864,2010-10-21,F,Mr. Ansh Bhargava,8993738016,"#573, Anna Nagar, Mysore",2500.0,active,2016-06-05
+NHS0286,Atharv Chatterjee,10,A,004596439927,2011-05-04,M,Mr. Karthik Chatterjee,8923675737,"#322, Wakad, Bengaluru",0,active,2016-06-14
+NHS0287,Meera Khanna,10,A,963925955287,2010-09-27,F,Mr. Sai Khanna,8313034028,"#512, Jayanagar, Bengaluru",0,active,2016-06-19
+NHS0288,Rohan Pillai,10,A,950420565358,2011-05-06,M,Mr. Aryan Pillai,9289550988,"#125, Adyar, Hyderabad",0,active,2016-06-01
+NHS0289,Trisha Verma,10,A,125250531021,2011-04-16,F,Mr. Vivek Verma,7999524758,"#171, Madhapur, Chennai",0,active,2016-06-17
+NHS0290,Khushi Mishra,10,B,129855211595,2011-04-07,F,Mr. Om Mishra,8157938700,"#449, Vijayanagar, Bengaluru",0,active,2016-06-14
+NHS0291,Krishna Tiwari,10,B,475081545447,2010-11-04,M,Mrs. Pari Tiwari,9027101147,"#415, Rajajinagar, Chennai",2500.0,active,2016-06-16
+NHS0292,Inaya Bose,10,B,472818724234,2010-10-08,F,Mrs. Aanya Bose,6211393850,"#440, Banjara Hills, Mumbai",7500.0,active,2016-06-07
+NHS0293,Charvi Malhotra,10,B,522354150960,2010-07-19,F,Mr. Harsh Malhotra,9229864420,"#54, Whitefield, Chennai",1000.0,active,2016-06-20
+NHS0294,Anika Bhat,10,B,541127209025,2010-05-02,F,Mr. Reyansh Bhat,6510185041,"#92, Bandra, Mysore",5000.0,active,2016-06-14
+NHS0295,Reyansh Joshi,10,B,608644601056,2010-07-09,M,Mrs. Esha Joshi,6403827973,"#28, Indiranagar, Pune",5000.0,active,2016-06-05
+NHS0296,Nidhi Mishra,10,B,750708364650,2011-05-01,F,Mrs. Ishita Mishra,9307080607,"#559, Jayanagar, Hyderabad",0,active,2016-06-10
+NHS0297,Kiaan Kumar,10,B,861602743915,2011-03-13,M,Mr. Jay Kumar,6899921522,"#585, Adyar, Bengaluru",0,active,2016-06-01
+NHS0298,Ira Tiwari,10,B,820982381251,2010-06-20,F,Mrs. Ishita Tiwari,8315969099,"#469, Malleshwaram, Pune",0,active,2016-06-02
+NHS0299,Pooja Rao,10,B,191579000929,2011-02-18,F,Mr. Harsh Rao,9276280358,"#52, Anna Nagar, Mumbai",0,active,2016-06-22
+NHS0300,Anika Bhat,10,B,710617336011,2010-07-19,F,Mr. Nikhil Bhat,9734998060,"#178, Baner, Mysore",0,active,2016-06-24
