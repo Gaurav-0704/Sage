@@ -194,6 +194,22 @@ def upcoming_exams(user: models.User = Depends(require_student),
     ).order_by(models.Exam.date.asc()).all()
 
 
+@router.get("/me/timetable", response_model=list[schemas.TimetableEntryOut])
+def my_timetable(user: models.User = Depends(require_student),
+                 db: Session = Depends(get_db)):
+    """The signed-in student's class timetable."""
+    from agents import timetable_agent
+    s = _student_for_user(db, user.id)
+    q = db.query(models.TimetableEntry).filter(
+        models.TimetableEntry.student_class == s.student_class)
+    if s.section:
+        q = q.filter(models.TimetableEntry.section == s.section)
+    rows = q.all()
+    order = {d: i for i, d in enumerate(schemas.TIMETABLE_DAYS)}
+    rows.sort(key=lambda e: (order.get(e.day, 9), e.period))
+    return [timetable_agent._out(db, e) for e in rows]
+
+
 @router.get("/me/attendance", response_model=schemas.StudentAttendanceOut)
 def my_attendance(user: models.User = Depends(require_student),
                   db: Session = Depends(get_db)):

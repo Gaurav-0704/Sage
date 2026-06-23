@@ -290,6 +290,44 @@ class StudentAttendanceOut(BaseModel):
     records: List[AttendanceOut]
 
 
+# ---------------- TIMETABLE ---------------- #
+
+TIMETABLE_DAYS = ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+
+
+class TimetableEntryCreate(BaseModel):
+    student_class: str
+    section: str = "A"
+    day: str                            # Mon..Sat
+    period: int                         # 1..N
+    subject: str
+    teacher_id: Optional[int] = None
+    room: Optional[str] = None
+    academic_year: Optional[str] = None
+
+
+class TimetableEntryUpdate(BaseModel):
+    day: Optional[str] = None
+    period: Optional[int] = None
+    subject: Optional[str] = None
+    teacher_id: Optional[int] = None
+    room: Optional[str] = None
+
+
+class TimetableEntryOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    student_class: str
+    section: str
+    day: str
+    period: int
+    subject: str
+    teacher_id: Optional[int]
+    teacher_name: Optional[str] = None
+    room: Optional[str]
+    academic_year: Optional[str]
+
+
 # ---------------- FEES ---------------- #
 
 class FeeStructureCreate(BaseModel):

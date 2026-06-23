@@ -28,6 +28,7 @@ import OwnerScanner from "./pages/OwnerScanner";
 import OwnerAI from "./pages/OwnerAI";
 import OwnerRecords from "./pages/OwnerRecords";
 import OwnerAttendance from "./pages/OwnerAttendance";
+import OwnerTimetable from "./pages/OwnerTimetable";
 
 import StaffDashboard from "./pages/StaffDashboard";
 import StaffStudents from "./pages/StaffStudents";
@@ -37,11 +38,13 @@ import TeacherDashboard from "./pages/TeacherDashboard";
 import TeacherClasses from "./pages/TeacherClasses";
 import TeacherAssignments from "./pages/TeacherAssignments";
 import TeacherAttendance from "./pages/TeacherAttendance";
+import TeacherTimetable from "./pages/TeacherTimetable";
 
 import StudentDashboard from "./pages/StudentDashboard";
 import StudentMarks from "./pages/StudentMarks";
 import StudentAssignments from "./pages/StudentAssignments";
 import StudentAttendance from "./pages/StudentAttendance";
+import StudentTimetable from "./pages/StudentTimetable";
 import MindGames from "./pages/MindGames";
 
 function Home() {
@@ -74,6 +77,13 @@ function AttendanceRouter() {
   return <Navigate to="/" replace />;
 }
 
+function TimetableRouter() {
+  const { user } = useAuth();
+  if (user?.role === "owner") return <OwnerTimetable />;
+  if (user?.role === "teacher") return <TeacherTimetable />;
+  return <Navigate to="/" replace />;
+}
+
 export default function App() {
   return (
     <AuthProvider>
@@ -101,8 +111,9 @@ export default function App() {
             <Route path="/tiles"         element={<RoleRoute role="owner"><Tiles /></RoleRoute>} />
             <Route path="/marks"         element={<RoleRoute role="owner"><Marks /></RoleRoute>} />
 
-            {/* Owner + Teacher: attendance (component swaps by role) */}
+            {/* Owner + Teacher: attendance & timetable (component swaps by role) */}
             <Route path="/attendance"    element={<AttendanceRouter />} />
+            <Route path="/timetable"     element={<TimetableRouter />} />
             <Route path="/notifications" element={<RoleRoute role="owner"><Notifications /></RoleRoute>} />
             <Route path="/audit"         element={<RoleRoute role="owner"><OwnerAudit /></RoleRoute>} />
             <Route path="/scanner"       element={<RoleRoute role="owner"><OwnerScanner /></RoleRoute>} />
@@ -117,6 +128,7 @@ export default function App() {
             {/* Student-only */}
             <Route path="/my-marks"        element={<RoleRoute role="student"><StudentMarks /></RoleRoute>} />
             <Route path="/my-attendance"   element={<RoleRoute role="student"><StudentAttendance /></RoleRoute>} />
+            <Route path="/my-timetable"    element={<RoleRoute role="student"><StudentTimetable /></RoleRoute>} />
             <Route path="/my-assignments"  element={<RoleRoute role="student"><StudentAssignments /></RoleRoute>} />
             <Route path="/games"           element={<RoleRoute role="student"><MindGames /></RoleRoute>} />
           </Route>

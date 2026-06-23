@@ -317,3 +317,25 @@ class Attendance(Base):
     status = Column(String, nullable=False)               # present|absent|late|leave
     marked_by = Column(Integer, ForeignKey("users.id"))
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class TimetableEntry(Base):
+    """One scheduled slot: a class/section on a weekday+period with a subject,
+    teacher and room. One subject per (class, section, day, period) slot; a
+    teacher can't be double-booked across classes for the same (day, period)."""
+    __tablename__ = "timetable_entries"
+    __table_args__ = (
+        UniqueConstraint("student_class", "section", "day", "period",
+                         name="uq_timetable_slot"),
+    )
+
+    id = Column(Integer, primary_key=True)
+    student_class = Column(String, nullable=False, index=True)
+    section = Column(String, nullable=False, default="A")
+    day = Column(String, nullable=False)                  # Mon..Sat
+    period = Column(Integer, nullable=False)              # 1..N
+    subject = Column(String, nullable=False)
+    teacher_id = Column(Integer, ForeignKey("teachers.id"), index=True)
+    room = Column(String)
+    academic_year = Column(String)
+    created_at = Column(DateTime, default=datetime.utcnow)
