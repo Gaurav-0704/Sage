@@ -260,6 +260,28 @@ class AssignmentOut(BaseModel):
     created_at: Optional[datetime]
 
 
+class SubmissionGradeIn(BaseModel):
+    marks_obtained: float
+    feedback: Optional[str] = None
+
+
+class AssignmentSubmissionOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    assignment_id: int
+    student_id: int
+    student_name: Optional[str] = None
+    assignment_title: Optional[str] = None
+    max_marks: Optional[float] = None
+    text: Optional[str]
+    file_name: Optional[str]
+    status: str
+    marks_obtained: Optional[float]
+    feedback: Optional[str]
+    submitted_at: Optional[datetime]
+    graded_at: Optional[datetime]
+
+
 # ---------------- ATTENDANCE ---------------- #
 
 ATTENDANCE_STATUSES = ("present", "absent", "late", "leave")

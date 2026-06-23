@@ -18,6 +18,9 @@ build/
 *.sqlite
 *.sqlite3
 
+# Uploaded files (assignment submissions)
+backend/uploads/
+
 # Environment
 .env
 .env.local

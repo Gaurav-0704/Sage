@@ -46,6 +46,8 @@ _SUMMARIES = [
     (r"POST",   r"^/exams/\d+/marks/bulk$",       "Saved exam marks"),
     (r"DELETE", r"^/exams/\d+$",                  "Deleted exam"),
     (r"POST",   r"^/assignments$",                "Created assignment"),
+    (r"POST",   r"^/student/me/assignments/\d+/submit$", "Submitted assignment"),
+    (r"POST",   r"^/assignments/submissions/\d+/grade$", "Graded submission"),
     (r"PUT",    r"^/assignments/\d+$",            "Updated assignment"),
     (r"DELETE", r"^/assignments/\d+$",            "Deleted assignment"),
     (r"POST",   r"^/tiles$",                      "Added tile"),

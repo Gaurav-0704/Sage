@@ -6,13 +6,14 @@ Student self-view Agent — v0.5.
 
 from collections import defaultdict
 from datetime import date
-from fastapi import APIRouter, Depends, HTTPException
-from fastapi.responses import Response
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
+from fastapi.responses import Response, FileResponse
 from sqlalchemy.orm import Session
 
 import models
 import schemas
 import report_cards
+import uploads
 from dependencies import get_db, require_student
 
 router = APIRouter(prefix="/student", tags=["student_self"])
@@ -121,6 +122,63 @@ def assignments(user: models.User = Depends(require_student),
             "max_marks": a.max_marks, "created_at": a.created_at,
         })
     return out
+
+
+@router.post("/me/assignments/{assignment_id}/submit",
+             response_model=schemas.AssignmentSubmissionOut)
+async def submit_assignment(assignment_id: int,
+                            text: str | None = Form(None),
+                            file: UploadFile | None = File(None),
+                            user: models.User = Depends(require_student),
+                            db: Session = Depends(get_db)):
+    """Submit (or re-submit until graded) an assignment for the signed-in student."""
+    from agents import assignments_agent
+    s = _student_for_user(db, user.id)
+    a = db.query(models.Assignment).filter(models.Assignment.id == assignment_id).first()
+    if not a:
+        raise HTTPException(404, "Assignment not found")
+    if a.student_class != s.student_class:
+        raise HTTPException(403, "This assignment is not for your class.")
+
+    file_name = file_path = None
+    if file is not None:
+        raw = await file.read()
+        if raw:
+            try:
+                file_name, file_path = uploads.save_bytes(file.filename, raw)
+            except ValueError as e:
+                raise HTTPException(400, str(e))
+    if not text and not file_name:
+        raise HTTPException(400, "Provide text and/or a file to submit.")
+    try:
+        sub = assignments_agent.upsert_submission(db, a, s, text, file_name, file_path)
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    db.commit(); db.refresh(sub)
+    return assignments_agent.submission_out(db, sub)
+
+
+@router.get("/me/submissions", response_model=list[schemas.AssignmentSubmissionOut])
+def my_submissions(user: models.User = Depends(require_student),
+                   db: Session = Depends(get_db)):
+    from agents import assignments_agent
+    s = _student_for_user(db, user.id)
+    subs = db.query(models.AssignmentSubmission).filter(
+        models.AssignmentSubmission.student_id == s.id).all()
+    return [assignments_agent.submission_out(db, sub) for sub in subs]
+
+
+@router.get("/me/submissions/{submission_id}/file")
+def download_my_submission(submission_id: int,
+                           user: models.User = Depends(require_student),
+                           db: Session = Depends(get_db)):
+    s = _student_for_user(db, user.id)
+    sub = db.query(models.AssignmentSubmission).filter(
+        models.AssignmentSubmission.id == submission_id,
+        models.AssignmentSubmission.student_id == s.id).first()
+    if not sub or not sub.file_path:
+        raise HTTPException(404, "File not found")
+    return FileResponse(sub.file_path, filename=sub.file_name or "submission")
 
 
 @router.get("/me/marks", response_model=list[schemas.StudentExamReport])

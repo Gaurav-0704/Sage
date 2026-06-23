@@ -113,6 +113,29 @@ class Assignment(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
+class AssignmentSubmission(Base):
+    """A student's submission for an assignment, plus the teacher's grade.
+    One submission per (assignment, student) — re-submitting updates it until
+    it has been graded."""
+    __tablename__ = "assignment_submissions"
+    __table_args__ = (
+        UniqueConstraint("assignment_id", "student_id", name="uq_submission"),
+    )
+
+    id = Column(Integer, primary_key=True)
+    assignment_id = Column(Integer, ForeignKey("assignments.id"), nullable=False, index=True)
+    student_id = Column(Integer, ForeignKey("students.id"), nullable=False, index=True)
+    text = Column(Text)                       # typed answer / notes
+    file_name = Column(String)                # original filename (display)
+    file_path = Column(String)                # stored path on disk
+    status = Column(String, default="submitted")   # submitted | graded
+    marks_obtained = Column(Float)
+    feedback = Column(Text)
+    graded_by = Column(Integer, ForeignKey("users.id"))
+    graded_at = Column(DateTime)
+    submitted_at = Column(DateTime, default=datetime.utcnow)
+
+
 class FeeStructure(Base):
     __tablename__ = "fee_structures"
 
