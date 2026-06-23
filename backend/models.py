@@ -342,6 +342,21 @@ class Attendance(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
+class Announcement(Base):
+    """Notice-board broadcast. audience targets a role group; student_class
+    optionally narrows to one class (and that class's parents)."""
+    __tablename__ = "announcements"
+
+    id = Column(Integer, primary_key=True)
+    title = Column(String, nullable=False)
+    body = Column(Text, nullable=False)
+    audience = Column(String, nullable=False, default="all")   # all|students|parents|teachers|staff
+    student_class = Column(String)                             # None = all classes
+    created_by = Column(Integer, ForeignKey("users.id"))
+    created_by_name = Column(String)
+    created_at = Column(DateTime, default=datetime.utcnow, index=True)
+
+
 class ParentLink(Base):
     """Links a parent User to a Student. A parent self-signs-up and *claims* a
     child (admission_no + verification); an owner approves the link.

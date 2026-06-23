@@ -339,6 +339,31 @@ class StudentAttendanceOut(BaseModel):
     records: List[AttendanceOut]
 
 
+# ---------------- ANNOUNCEMENTS ---------------- #
+
+ANNOUNCEMENT_AUDIENCES = ("all", "students", "parents", "teachers", "staff")
+
+
+class AnnouncementCreate(BaseModel):
+    title: str
+    body: str
+    audience: str = "all"
+    student_class: Optional[str] = None
+    notify: bool = False                # also email the targeted audience
+
+
+class AnnouncementOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    title: str
+    body: str
+    audience: str
+    student_class: Optional[str]
+    created_by: Optional[int]
+    created_by_name: Optional[str]
+    created_at: datetime
+
+
 # ---------------- TIMETABLE ---------------- #
 
 TIMETABLE_DAYS = ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat")

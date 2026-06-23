@@ -16,6 +16,7 @@ const NAV = {
     { to: "/timetable",   label: "Timetable",     icon: "📅", section: "Academics" },
     { to: "/finance",     label: "Finance",       icon: "🏦", section: "Money" },
     { to: "/reports",     label: "Reports",       icon: "📈", section: "Money" },
+    { to: "/notices",     label: "Notice Board",  icon: "📢", section: "Admin" },
     { to: "/tiles",       label: "Quick Tiles",   icon: "🔲", section: "Admin" },
     { to: "/assistant",   label: "Assistant",     icon: "💬", section: "Admin" },
     { to: "/scanner",     label: "Scanner",       icon: "🔍", section: "Admin" },
@@ -26,6 +27,7 @@ const NAV = {
   staff: [
     { to: "/",         label: "Quick Entry", icon: "⚡", section: "Today" },
     { to: "/students", label: "Students",    icon: "🎓", section: "Today" },
+    { to: "/notices",  label: "Notice Board", icon: "📢", section: "Today" },
     { to: "/settings", label: "Settings",    icon: "⚙️", section: "Account" },
   ],
   teacher: [
@@ -35,10 +37,12 @@ const NAV = {
     { to: "/timetable",   label: "Timetable",   icon: "📅", section: "Today" },
     { to: "/assignments", label: "Assignments", icon: "📝", section: "Academics" },
     { to: "/quick-entry", label: "Quick Entry", icon: "⚡", section: "Front Office", flagged: "frontoffice" },
+    { to: "/notices",     label: "Notice Board", icon: "📢", section: "Academics" },
     { to: "/settings",    label: "Settings",    icon: "⚙️", section: "Account" },
   ],
   parent: [
     { to: "/",            label: "My Children",  icon: "👪", section: "Today" },
+    { to: "/notices",     label: "Notice Board", icon: "📢", section: "Today" },
     { to: "/settings",    label: "Settings",     icon: "⚙️", section: "Account" },
   ],
   student: [
@@ -47,6 +51,7 @@ const NAV = {
     { to: "/my-attendance", label: "My Attendance", icon: "🗓", section: "Academics" },
     { to: "/my-timetable", label: "My Timetable", icon: "📅", section: "Academics" },
     { to: "/my-assignments", label: "Assignments", icon: "📝", section: "Academics" },
+    { to: "/notices",     label: "Notice Board", icon: "📢", section: "Academics" },
     { to: "/games",       label: "Mind Games",   icon: "🎮", section: "Fun" },
     { to: "/settings",    label: "Settings",     icon: "⚙️", section: "Account" },
   ],

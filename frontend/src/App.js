@@ -50,6 +50,8 @@ import MindGames from "./pages/MindGames";
 import ParentDashboard from "./pages/ParentDashboard";
 import ParentChild from "./pages/ParentChild";
 
+import Announcements from "./pages/Announcements";
+
 function Home() {
   const { user } = useAuth();
   if (!user) return null;
@@ -100,6 +102,7 @@ export default function App() {
           <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
             <Route path="/"             element={<Home />} />
             <Route path="/settings"     element={<Settings />} />
+            <Route path="/notices"      element={<Announcements />} />
 
             {/* Owner / Staff shared */}
             <Route path="/students"     element={<StudentsRouter />} />
