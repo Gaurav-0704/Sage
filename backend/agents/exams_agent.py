@@ -11,7 +11,10 @@ from sqlalchemy.orm import Session
 
 import models
 import schemas
+import notifications
 from dependencies import get_db, require_owner, require_staff_or_owner
+
+SCHOOL_NAME = "Sage"
 
 router = APIRouter(tags=["exams"])
 
@@ -108,7 +111,22 @@ def save_marks_bulk(exam_id: int,
             ))
         saved += 1
     db.commit()
-    return {"ok": True, "saved": saved}
+
+    # Notify each affected student + their approved parents that results are out.
+    student_ids = {r.student_id for r in payload.rows}
+    notified = 0
+    for sid in student_ids:
+        s = db.query(models.Student).filter(models.Student.id == sid).first()
+        if not s:
+            continue
+        notified += notifications.notify_student(
+            db, s,
+            f"Marks published — {exam.name}",
+            f"Dear parent/guardian,\n\nMarks for {exam.name} "
+            f"({exam.academic_year}) have been published for {s.name} "
+            f"(Class {s.student_class}). Sign in to view the full report card.\n\n"
+            f"— {SCHOOL_NAME}")
+    return {"ok": True, "saved": saved, "notified": notified}
 
 
 # ---------- Per-student views ---------- #

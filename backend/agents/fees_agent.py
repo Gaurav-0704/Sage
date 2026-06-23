@@ -25,6 +25,7 @@ from sqlalchemy.orm import Session
 
 import models
 import schemas
+import notifications
 from dependencies import (
     get_db, require_owner, require_can_collect,
 )
@@ -202,6 +203,17 @@ def make_payment(payload: schemas.PaymentCreate,
 
     db.commit()
     db.refresh(payment)
+
+    # Notify the student + their approved parents that a payment was recorded.
+    due_now = sum(f.due_amount for f in db.query(models.Fee).filter(
+        models.Fee.student_id == student.id).all()) + (student.last_year_dues or 0)
+    notifications.notify_student(
+        db, student,
+        f"Fee payment received — ₹{payment.amount:,.0f}",
+        f"Dear parent/guardian,\n\nWe have received a payment of "
+        f"₹{payment.amount:,.0f} ({payment.mode}) for {student.name} "
+        f"(Class {student.student_class}).\n"
+        f"Outstanding balance: ₹{max(0.0, due_now):,.0f}.\n\nThank you,\n{SCHOOL_NAME}")
     return payment
 
 
