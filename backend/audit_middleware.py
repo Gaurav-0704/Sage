@@ -35,6 +35,7 @@ _SUMMARIES = [
     (r"DELETE", r"^/expenses/\d+$",               "Deleted expense"),
     (r"POST",   r"^/fee-structures$",             "Created fee structure"),
     (r"POST",   r"^/fee-structures/\d+/apply$",   "Applied fee structure"),
+    (r"POST",   r"^/attendance/mark$",            "Marked attendance"),
     (r"POST",   r"^/exams$",                      "Created exam"),
     (r"POST",   r"^/exams/\d+/marks/bulk$",       "Saved exam marks"),
     (r"DELETE", r"^/exams/\d+$",                  "Deleted exam"),

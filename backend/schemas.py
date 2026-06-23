@@ -233,6 +233,63 @@ class AssignmentOut(BaseModel):
     created_at: Optional[datetime]
 
 
+# ---------------- ATTENDANCE ---------------- #
+
+ATTENDANCE_STATUSES = ("present", "absent", "late", "leave")
+
+
+class AttendanceMarkRow(BaseModel):
+    student_id: int
+    status: str
+
+
+class AttendanceMarkIn(BaseModel):
+    student_class: str
+    section: Optional[str] = None
+    date: Optional[Date] = None         # defaults to today server-side
+    period: int = 0                     # 0 = whole-day
+    rows: List[AttendanceMarkRow]
+
+
+class AttendanceOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    student_id: int
+    date: Date
+    period: int
+    status: str
+
+
+class AttendanceClassRow(BaseModel):
+    """Roster row for the marking screen — status is None if not yet marked."""
+    student_id: int
+    name: str
+    section: Optional[str]
+    status: Optional[str] = None
+
+
+class AttendanceSummaryRow(BaseModel):
+    student_id: int
+    name: str
+    section: Optional[str] = None
+    total: int
+    present: int
+    absent: int
+    late: int
+    leave: int
+    percentage: float                   # present+late counted as attended
+
+
+class StudentAttendanceOut(BaseModel):
+    total: int
+    present: int
+    absent: int
+    late: int
+    leave: int
+    percentage: float
+    records: List[AttendanceOut]
+
+
 # ---------------- FEES ---------------- #
 
 class FeeStructureCreate(BaseModel):

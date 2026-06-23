@@ -192,3 +192,20 @@ def upcoming_exams(user: models.User = Depends(require_student),
         models.Exam.date != None,
         models.Exam.date >= date.today(),
     ).order_by(models.Exam.date.asc()).all()
+
+
+@router.get("/me/attendance", response_model=schemas.StudentAttendanceOut)
+def my_attendance(user: models.User = Depends(require_student),
+                  db: Session = Depends(get_db)):
+    """The signed-in student's attendance summary + recent records."""
+    from agents import attendance_agent
+    s = _student_for_user(db, user.id)
+    tally = attendance_agent.summarize(db, [s.id]).get(s.id, {
+        "total": 0, "present": 0, "absent": 0, "late": 0, "leave": 0, "percentage": 0.0,
+    })
+    records = db.query(models.Attendance).filter(
+        models.Attendance.student_id == s.id
+    ).order_by(models.Attendance.date.desc(), models.Attendance.period).limit(60).all()
+    return schemas.StudentAttendanceOut(
+        **tally, records=[schemas.AttendanceOut.model_validate(r) for r in records],
+    )

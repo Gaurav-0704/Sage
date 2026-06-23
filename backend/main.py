@@ -36,6 +36,7 @@ from agents import (
     ai_agent,
     records_agent,
     insights_agent,
+    attendance_agent,
 )
 
 SCHOOL_NAME = "Sage"
@@ -186,7 +187,8 @@ for r in (auth_agent.router, students_agent.router, fees_agent.router,
           tiles_agent.router, exams_agent.router, teachers_agent.router,
           assignments_agent.router, teacher_self_agent.router,
           student_self_agent.router, audit_agent.router, scanner_agent.router,
-          ai_agent.router, records_agent.router, insights_agent.router):
+          ai_agent.router, records_agent.router, insights_agent.router,
+          attendance_agent.router):
     app.include_router(r)
 
 
@@ -202,6 +204,7 @@ def health():
             "teachers", "assignments",
             "teacher_self", "student_self",
             "audit", "scanner", "ai", "records", "insights",
+            "attendance",
         ],
         "status": "ok",
     }

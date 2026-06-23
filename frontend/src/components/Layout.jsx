@@ -12,6 +12,7 @@ const NAV = {
     { to: "/fees",        label: "Fees",          icon: "💳", section: "Operations" },
     { to: "/expenses",    label: "Expenses",      icon: "🧾", section: "Operations" },
     { to: "/marks",       label: "Marks & Exams", icon: "📝", section: "Academics" },
+    { to: "/attendance",  label: "Attendance",    icon: "🗓", section: "Academics" },
     { to: "/finance",     label: "Finance",       icon: "🏦", section: "Money" },
     { to: "/reports",     label: "Reports",       icon: "📈", section: "Money" },
     { to: "/tiles",       label: "Quick Tiles",   icon: "🔲", section: "Admin" },
@@ -29,6 +30,7 @@ const NAV = {
   teacher: [
     { to: "/",            label: "Dashboard",   icon: "📊", section: "Today" },
     { to: "/my-classes",  label: "My Classes",  icon: "🎓", section: "Today" },
+    { to: "/attendance",  label: "Attendance",  icon: "🗓", section: "Today" },
     { to: "/assignments", label: "Assignments", icon: "📝", section: "Academics" },
     { to: "/quick-entry", label: "Quick Entry", icon: "⚡", section: "Front Office", flagged: "frontoffice" },
     { to: "/settings",    label: "Settings",    icon: "⚙️", section: "Account" },
@@ -36,6 +38,7 @@ const NAV = {
   student: [
     { to: "/",            label: "Dashboard",    icon: "📊", section: "Today" },
     { to: "/my-marks",    label: "My Marks",     icon: "📈", section: "Academics" },
+    { to: "/my-attendance", label: "My Attendance", icon: "🗓", section: "Academics" },
     { to: "/my-assignments", label: "Assignments", icon: "📝", section: "Academics" },
     { to: "/games",       label: "Mind Games",   icon: "🎮", section: "Fun" },
     { to: "/settings",    label: "Settings",     icon: "⚙️", section: "Account" },

@@ -82,6 +82,13 @@ def require_can_collect(user: models.User = Depends(get_current_user)) -> models
 
 def require_school_member(user: models.User = Depends(get_current_user)) -> models.User:
     """Anyone signed in (owner|staff|teacher|student)."""
-    if user.role not in ("owner", "staff", "teacher", "student"):
+    if user.role not in ("owner", "staff", "teacher", "student", "parent"):
         raise HTTPException(status_code=403, detail="Sign-in required.")
+    return user
+
+
+def require_attendance_marker(user: models.User = Depends(get_current_user)) -> models.User:
+    """Who may mark/view attendance for a class: owner, staff, or teacher."""
+    if user.role not in ("owner", "staff", "teacher"):
+        raise HTTPException(status_code=403, detail="Attendance access required.")
     return user

@@ -14,7 +14,8 @@ ORM models — Sage ERP.
 
 from datetime import datetime, date
 from sqlalchemy import (
-    Column, Integer, String, Float, Date, DateTime, ForeignKey, Text, Boolean
+    Column, Integer, String, Float, Date, DateTime, ForeignKey, Text, Boolean,
+    UniqueConstraint,
 )
 from sqlalchemy.orm import relationship
 from database import Base
@@ -296,3 +297,23 @@ class TeacherClass(Base):
     id = Column(Integer, primary_key=True)
     teacher_id = Column(Integer, ForeignKey("teachers.id"), nullable=False, index=True)
     student_class = Column(String, nullable=False)
+
+
+class Attendance(Base):
+    """One row per student per day per period.
+
+    period 0 means whole-day (daily) attendance; period 1..N is period-wise.
+    A (student_id, date, period) slot is unique — marking again updates it.
+    """
+    __tablename__ = "attendance"
+    __table_args__ = (
+        UniqueConstraint("student_id", "date", "period", name="uq_attendance_slot"),
+    )
+
+    id = Column(Integer, primary_key=True)
+    student_id = Column(Integer, ForeignKey("students.id"), nullable=False, index=True)
+    date = Column(Date, nullable=False, index=True)
+    period = Column(Integer, nullable=False, default=0)   # 0 = whole day
+    status = Column(String, nullable=False)               # present|absent|late|leave
+    marked_by = Column(Integer, ForeignKey("users.id"))
+    created_at = Column(DateTime, default=datetime.utcnow)
