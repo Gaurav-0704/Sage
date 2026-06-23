@@ -9,9 +9,12 @@ from collections import defaultdict
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
+from fastapi.responses import Response
+
 import models
 import schemas
 import notifications
+import report_cards
 from dependencies import get_db, require_owner, require_staff_or_owner
 
 SCHOOL_NAME = "Sage"
@@ -127,6 +130,23 @@ def save_marks_bulk(exam_id: int,
             f"(Class {s.student_class}). Sign in to view the full report card.\n\n"
             f"— {SCHOOL_NAME}")
     return {"ok": True, "saved": saved, "notified": notified}
+
+
+@router.get("/exams/{exam_id}/report-card/{student_id}")
+def report_card(exam_id: int, student_id: int,
+                db: Session = Depends(get_db),
+                _user: models.User = Depends(require_staff_or_owner)):
+    """Download a student's graded report-card PDF for one exam."""
+    exam = db.query(models.Exam).filter(models.Exam.id == exam_id).first()
+    if not exam:
+        raise HTTPException(404, "Exam not found")
+    student = db.query(models.Student).filter(models.Student.id == student_id).first()
+    if not student:
+        raise HTTPException(404, "Student not found")
+    pdf = report_cards.build_report_card(db, student, exam)
+    fname = f"report_{student.admission_no}_{exam.name}.pdf".replace(" ", "_")
+    return Response(content=pdf, media_type="application/pdf",
+                    headers={"Content-Disposition": f'attachment; filename="{fname}"'})
 
 
 # ---------- Per-student views ---------- #

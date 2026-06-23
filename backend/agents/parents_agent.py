@@ -10,10 +10,12 @@ fees, assignments and notices — read-only.
 from datetime import date
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
 import models
 import schemas
+import report_cards
 from dependencies import get_db, require_parent, require_owner
 from agents import attendance_agent, student_self_agent, students_agent
 
@@ -164,6 +166,20 @@ def child_fees(student_id: int,
         "student_id": s.id, "name": s.name, **summary,
         "payments": [schemas.PaymentOut.model_validate(p).model_dump() for p in s.payments],
     }
+
+
+@router.get("/me/children/{student_id}/report-card/{exam_id}")
+def child_report_card(student_id: int, exam_id: int,
+                      user: models.User = Depends(require_parent),
+                      db: Session = Depends(get_db)):
+    s = _require_child(db, user.id, student_id)
+    exam = db.query(models.Exam).filter(models.Exam.id == exam_id).first()
+    if not exam:
+        raise HTTPException(404, "Exam not found")
+    pdf = report_cards.build_report_card(db, s, exam)
+    fname = f"report_{s.admission_no}_{exam.name}.pdf".replace(" ", "_")
+    return Response(content=pdf, media_type="application/pdf",
+                    headers={"Content-Disposition": f'attachment; filename="{fname}"'})
 
 
 @router.get("/me/children/{student_id}/assignments",

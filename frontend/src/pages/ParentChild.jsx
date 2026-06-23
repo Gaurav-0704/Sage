@@ -37,7 +37,7 @@ export default function ParentChild() {
       {err && <div className="error-banner">{err}</div>}
 
       {data && tab === "attendance" && <AttendanceView data={data} />}
-      {data && tab === "marks" && <MarksView data={data} />}
+      {data && tab === "marks" && <MarksView data={data} childId={id} />}
       {data && tab === "fees" && <FeesView data={data} />}
       {data && tab === "assignments" && <AssignmentsView data={data} />}
     </div>
@@ -75,20 +75,34 @@ function AttendanceView({ data }) {
   );
 }
 
-function MarksView({ data }) {
+function MarksView({ data, childId }) {
+  const download = async (examId, examName) => {
+    try {
+      const r = await api.get(`/parent/me/children/${childId}/report-card/${examId}`,
+                              { responseType: "blob" });
+      const url = URL.createObjectURL(new Blob([r.data], { type: "application/pdf" }));
+      const a = document.createElement("a");
+      a.href = url; a.download = `report_${examName}.pdf`.replace(/\s+/g, "_"); a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) { alert("Download failed"); }
+  };
   return (
     <div className="table-wrap">
       <table className="table">
-        <thead><tr><th>Exam</th><th>Year</th><th className="num">Obtained</th><th className="num">Max</th><th className="num">%</th><th>Grade</th></tr></thead>
+        <thead><tr><th>Exam</th><th>Year</th><th className="num">Obtained</th><th className="num">Max</th><th className="num">%</th><th>Grade</th><th></th></tr></thead>
         <tbody>
           {data.map((r) => (
             <tr key={r.exam_id}>
               <td>{r.exam_name}</td><td>{r.academic_year}</td>
               <td className="num">{r.total_obtained}</td><td className="num">{r.total_max}</td>
               <td className="num">{r.percentage}%</td><td><span className="pill">{r.grade}</span></td>
+              <td className="num">
+                <button className="btn btn-secondary" style={{ padding: "4px 10px", fontSize: 12 }}
+                        onClick={() => download(r.exam_id, r.exam_name)}>⬇ PDF</button>
+              </td>
             </tr>
           ))}
-          {data.length === 0 && <tr><td colSpan={6} className="empty">No marks yet.</td></tr>}
+          {data.length === 0 && <tr><td colSpan={7} className="empty">No marks yet.</td></tr>}
         </tbody>
       </table>
     </div>

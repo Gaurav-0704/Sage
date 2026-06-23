@@ -7,10 +7,12 @@ Student self-view Agent — v0.5.
 from collections import defaultdict
 from datetime import date
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
 import models
 import schemas
+import report_cards
 from dependencies import get_db, require_student
 
 router = APIRouter(prefix="/student", tags=["student_self"])
@@ -208,6 +210,21 @@ def my_timetable(user: models.User = Depends(require_student),
     order = {d: i for i, d in enumerate(schemas.TIMETABLE_DAYS)}
     rows.sort(key=lambda e: (order.get(e.day, 9), e.period))
     return [timetable_agent._out(db, e) for e in rows]
+
+
+@router.get("/me/report-card/{exam_id}")
+def my_report_card(exam_id: int,
+                   user: models.User = Depends(require_student),
+                   db: Session = Depends(get_db)):
+    """The signed-in student's report-card PDF for one exam."""
+    s = _student_for_user(db, user.id)
+    exam = db.query(models.Exam).filter(models.Exam.id == exam_id).first()
+    if not exam:
+        raise HTTPException(404, "Exam not found")
+    pdf = report_cards.build_report_card(db, s, exam)
+    fname = f"report_{s.admission_no}_{exam.name}.pdf".replace(" ", "_")
+    return Response(content=pdf, media_type="application/pdf",
+                    headers={"Content-Disposition": f'attachment; filename="{fname}"'})
 
 
 @router.get("/me/attendance", response_model=schemas.StudentAttendanceOut)

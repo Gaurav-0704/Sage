@@ -17,6 +17,16 @@ export default function StudentMarks() {
       .catch((e) => setErr(e?.response?.data?.detail || "Failed to load"));
   }, []);
 
+  const downloadReport = async (examId, examName) => {
+    try {
+      const r = await api.get(`/student/me/report-card/${examId}`, { responseType: "blob" });
+      const url = URL.createObjectURL(new Blob([r.data], { type: "application/pdf" }));
+      const a = document.createElement("a");
+      a.href = url; a.download = `report_${examName}.pdf`.replace(/\s+/g, "_"); a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) { alert("Download failed"); }
+  };
+
   return (
     <div>
       <div className="page-header">
@@ -74,9 +84,13 @@ export default function StudentMarks() {
         <div className="empty">No marks recorded yet.</div>
       ) : reports.map((r) => (
         <div key={r.exam_id} className="card mb-16">
-          <div className="card-title">
-            {r.exam_name}
-            <span className={"pill " + gradePill(r.grade)}>{r.percentage}% · {r.grade}</span>
+          <div className="card-title flex between items-center">
+            <span>
+              {r.exam_name}
+              <span className={"pill " + gradePill(r.grade)} style={{ marginLeft: 8 }}>{r.percentage}% · {r.grade}</span>
+            </span>
+            <button className="btn btn-secondary" style={{ padding: "4px 10px", fontSize: 12 }}
+                    onClick={() => downloadReport(r.exam_id, r.exam_name)}>⬇ Report card</button>
           </div>
           <table className="table">
             <thead>

@@ -7,6 +7,7 @@ bcrypt==5.0.0
 python-multipart==0.0.26
 python-dotenv==1.2.2
 openpyxl==3.1.5
+fpdf2==2.8.1
 httptools==0.7.1
 pytest==8.4.1
 pytest-asyncio==0.26.0

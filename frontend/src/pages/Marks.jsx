@@ -163,6 +163,16 @@ function MarksGridModal({ exam, onClose }) {
     setSaved(false);
   };
 
+  const downloadReport = async (sid, name) => {
+    try {
+      const r = await api.get(`/exams/${exam.id}/report-card/${sid}`, { responseType: "blob" });
+      const url = URL.createObjectURL(new Blob([r.data], { type: "application/pdf" }));
+      const a = document.createElement("a");
+      a.href = url; a.download = `report_${name}_${exam.name}.pdf`.replace(/\s+/g, "_"); a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) { alert("Download failed — save marks first."); }
+  };
+
   const save = async () => {
     setErr(""); setBusy(true); setSaved(false);
     const rows = [];
@@ -197,6 +207,7 @@ function MarksGridModal({ exam, onClose }) {
                 <th style={{ position: "sticky", left: 0, background: "var(--surface-2)", zIndex: 1 }}>Student</th>
                 {SUBJECTS.map((s) => <th key={s} className="num">{s}</th>)}
                 <th className="num">Total</th>
+                <th className="num">Report</th>
               </tr>
             </thead>
             <tbody>
@@ -222,11 +233,15 @@ function MarksGridModal({ exam, onClose }) {
                       </td>
                     ))}
                     <td className="num" style={{ fontWeight: 600 }}>{total || "—"}</td>
+                    <td className="num">
+                      <button className="btn btn-secondary" style={{ padding: "3px 8px", fontSize: 11 }}
+                              onClick={() => downloadReport(s.id, s.name)}>⬇ PDF</button>
+                    </td>
                   </tr>
                 );
               })}
               {students.length === 0 && (
-                <tr><td colSpan={SUBJECTS.length + 2} className="empty">No students in this class.</td></tr>
+                <tr><td colSpan={SUBJECTS.length + 3} className="empty">No students in this class.</td></tr>
               )}
             </tbody>
           </table>
