@@ -54,8 +54,8 @@ def signup(payload: schemas.SignupIn, db: Session = Depends(get_db)):
     """
     if payload.role == "owner":
         raise HTTPException(403, "Owner accounts cannot be self-registered.")
-    if payload.role not in ("staff", "teacher", "student"):
-        raise HTTPException(400, "role must be staff, teacher, or student")
+    if payload.role not in ("staff", "teacher", "student", "parent"):
+        raise HTTPException(400, "role must be staff, teacher, student, or parent")
 
     if db.query(models.User).filter(models.User.email == payload.email).first():
         raise HTTPException(400, "An account with this email already exists.")
@@ -88,6 +88,33 @@ def signup(payload: schemas.SignupIn, db: Session = Depends(get_db)):
             f"— {SCHOOL_NAME}")
         return {"ok": True, "status": "active",
                 "message": "Account created. You can sign in now."}
+
+    if payload.role == "parent":
+        from agents import parents_agent
+        if not payload.admission_no or not payload.phone:
+            raise HTTPException(400, "Parents must provide the child's admission number and phone.")
+        user = models.User(
+            name=payload.name, email=payload.email,
+            password=auth.hash_password(payload.password),
+            role="parent", status="pending",
+        )
+        db.add(user); db.commit(); db.refresh(user)
+        try:
+            parents_agent.verify_and_link(db, user.id, payload.admission_no, payload.phone)
+        except ValueError as e:
+            db.delete(user); db.commit()
+            raise HTTPException(400, str(e))
+        db.commit()
+        owners = db.query(models.User).filter(models.User.role == "owner",
+                                              models.User.status == "active").all()
+        for ow in owners:
+            notifications.send(db, ow.email,
+                f"New parent signup pending — {payload.name}",
+                f"{payload.name} ({payload.email}) signed up as a parent and "
+                f"claimed admission no {payload.admission_no}.\n"
+                f"Sign in to {SCHOOL_NAME} ERP → Approvals to review the account and link.")
+        return {"ok": True, "status": "pending",
+                "message": "Account created and child claim submitted — awaiting Owner approval."}
 
     if payload.role == "teacher":
         if not payload.employee_id:
@@ -148,6 +175,13 @@ def approve_user(user_id: int,
     u.status = "active"
     if payload.can_do_front_office is not None and u.role == "teacher":
         u.can_do_front_office = payload.can_do_front_office
+    if u.role == "parent":
+        # Approving the parent account also approves their pending child links.
+        for link in db.query(models.ParentLink).filter(
+            models.ParentLink.parent_user_id == u.id,
+            models.ParentLink.status == "pending",
+        ).all():
+            link.status = "approved"
     db.commit(); db.refresh(u)
     notifications.send(db, u.email,
         f"Your {SCHOOL_NAME} account is now active",
@@ -164,6 +198,10 @@ def reject_user(user_id: int,
     if u.role == "teacher":
         t = db.query(models.Teacher).filter(models.Teacher.user_id == u.id).first()
         if t: db.delete(t)
+    if u.role == "parent":
+        for link in db.query(models.ParentLink).filter(
+            models.ParentLink.parent_user_id == u.id).all():
+            db.delete(link)
     db.delete(u)
     db.commit()
     return {"ok": True}

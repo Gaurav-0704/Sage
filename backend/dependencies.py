@@ -65,6 +65,12 @@ def require_student(user: models.User = Depends(get_current_user)) -> models.Use
     return user
 
 
+def require_parent(user: models.User = Depends(get_current_user)) -> models.User:
+    if user.role != "parent":
+        raise HTTPException(status_code=403, detail="Parent access required.")
+    return user
+
+
 def require_staff_or_owner(user: models.User = Depends(get_current_user)) -> models.User:
     if user.role not in ("staff", "owner"):
         raise HTTPException(status_code=403, detail="Staff or Owner access required.")

@@ -47,6 +47,9 @@ import StudentAttendance from "./pages/StudentAttendance";
 import StudentTimetable from "./pages/StudentTimetable";
 import MindGames from "./pages/MindGames";
 
+import ParentDashboard from "./pages/ParentDashboard";
+import ParentChild from "./pages/ParentChild";
+
 function Home() {
   const { user } = useAuth();
   if (!user) return null;
@@ -55,6 +58,7 @@ function Home() {
     staff:   <StaffDashboard />,
     teacher: <TeacherDashboard />,
     student: <StudentDashboard />,
+    parent:  <ParentDashboard />,
   })[user.role] || <Dashboard />;
 }
 
@@ -131,6 +135,9 @@ export default function App() {
             <Route path="/my-timetable"    element={<RoleRoute role="student"><StudentTimetable /></RoleRoute>} />
             <Route path="/my-assignments"  element={<RoleRoute role="student"><StudentAssignments /></RoleRoute>} />
             <Route path="/games"           element={<RoleRoute role="student"><MindGames /></RoleRoute>} />
+
+            {/* Parent-only */}
+            <Route path="/child/:id"       element={<RoleRoute role="parent"><ParentChild /></RoleRoute>} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

@@ -37,6 +37,10 @@ const NAV = {
     { to: "/quick-entry", label: "Quick Entry", icon: "⚡", section: "Front Office", flagged: "frontoffice" },
     { to: "/settings",    label: "Settings",    icon: "⚙️", section: "Account" },
   ],
+  parent: [
+    { to: "/",            label: "My Children",  icon: "👪", section: "Today" },
+    { to: "/settings",    label: "Settings",     icon: "⚙️", section: "Account" },
+  ],
   student: [
     { to: "/",            label: "Dashboard",    icon: "📊", section: "Today" },
     { to: "/my-marks",    label: "My Marks",     icon: "📈", section: "Academics" },

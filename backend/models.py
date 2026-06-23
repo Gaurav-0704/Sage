@@ -319,6 +319,22 @@ class Attendance(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
+class ParentLink(Base):
+    """Links a parent User to a Student. A parent self-signs-up and *claims* a
+    child (admission_no + verification); an owner approves the link.
+    status: pending | approved | rejected."""
+    __tablename__ = "parent_links"
+    __table_args__ = (
+        UniqueConstraint("parent_user_id", "student_id", name="uq_parent_student"),
+    )
+
+    id = Column(Integer, primary_key=True)
+    parent_user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    student_id = Column(Integer, ForeignKey("students.id"), nullable=False, index=True)
+    status = Column(String, nullable=False, default="pending")
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
 class TimetableEntry(Base):
     """One scheduled slot: a class/section on a weekday+period with a subject,
     teacher and room. One subject per (class, section, day, period) slot; a

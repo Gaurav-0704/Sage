@@ -49,14 +49,41 @@ class SignupIn(BaseModel):
     name: str
     email: EmailStr
     password: str
-    role: str                          # staff | teacher | student
+    role: str                          # staff | teacher | student | parent
     # Role-specific extras
-    admission_no: Optional[str] = None       # students
+    admission_no: Optional[str] = None       # students + parents (child)
     employee_id: Optional[str] = None        # teachers
     subject: Optional[str] = None            # teachers
     classes_taught: Optional[str] = None     # teachers ("5,6,7")
     qualification: Optional[str] = None      # teachers
-    phone: Optional[str] = None              # teachers
+    phone: Optional[str] = None              # teachers; parents (verification)
+
+
+class ParentClaimIn(BaseModel):
+    admission_no: str
+    phone: str                               # must match the student's phone on record
+
+
+class ParentChildOut(BaseModel):
+    student_id: int
+    admission_no: str
+    name: str
+    student_class: str
+    section: Optional[str]
+    link_status: str
+
+
+class ParentLinkOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    parent_user_id: int
+    student_id: int
+    status: str
+    # enriched
+    parent_name: Optional[str] = None
+    parent_email: Optional[str] = None
+    student_name: Optional[str] = None
+    admission_no: Optional[str] = None
 
 
 class ForgotIn(BaseModel):

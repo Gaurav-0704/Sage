@@ -4,6 +4,7 @@ import { api } from "../api";
 
 const ROLES = [
   { v: "student", label: "Student",  hint: "I'm a student here" },
+  { v: "parent",  label: "Parent",   hint: "I'm a parent / guardian" },
   { v: "teacher", label: "Teacher",  hint: "I teach at the school" },
   { v: "staff",   label: "Staff",    hint: "I work at the front office" },
 ];
@@ -24,6 +25,10 @@ export default function Signup() {
     e.preventDefault(); setErr(""); setMsg(""); setBusy(true);
     const body = { name: f.name, email: f.email, password: f.password, role };
     if (role === "student") body.admission_no = f.admission_no;
+    if (role === "parent") {
+      body.admission_no = f.admission_no;
+      body.phone = f.phone;
+    }
     if (role === "teacher") {
       body.employee_id = f.employee_id;
       body.subject = f.subject;
@@ -97,6 +102,24 @@ export default function Signup() {
                    placeholder="e.g. SGE0001" required/>
             <div className="text-3" style={{ fontSize: 11 }}>
               Must match your student record. Ask the office if you don't know it.
+            </div>
+          </div>
+        )}
+
+        {role === "parent" && (
+          <div className="form-grid">
+            <div className="form-row">
+              <label>Child's admission number</label>
+              <input className="input" value={f.admission_no} onChange={set("admission_no")}
+                     placeholder="e.g. SGE0001" required/>
+            </div>
+            <div className="form-row">
+              <label>Child's registered phone</label>
+              <input className="input" value={f.phone} onChange={set("phone")}
+                     placeholder="Phone on the student record" required/>
+              <div className="text-3" style={{ fontSize: 11 }}>
+                Used to verify your claim. The Owner approves the link before you see your child's data.
+              </div>
             </div>
           </div>
         )}
