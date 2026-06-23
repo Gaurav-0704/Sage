@@ -11,12 +11,13 @@ from datetime import date as Date, datetime
 from typing import Optional
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, Response
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 
 import models
 import schemas
+import excel_io
 from csv_sync import sync_students, sync_records
 from dependencies import (
     get_db, require_owner, require_school_member,
@@ -173,8 +174,8 @@ def create_student(
 ):
     if db.query(models.Student).filter(models.Student.admission_no == payload.admission_no).first():
         raise HTTPException(status_code=400, detail="Admission number already exists")
-    s = models.Student(**payload.model_dump(exclude_unset=True))
-    db.add(s)
+    # Same upsert path the Excel/CSV import uses — one source of truth.
+    _, s = upsert_student(db, payload.model_dump(exclude_unset=True))
     db.commit()
     db.refresh(s)
     sync_students(db)   # keep data/seed_students.csv in step
@@ -274,6 +275,69 @@ def _row_to_fields(row: dict) -> dict:
     return fields
 
 
+# ---------- Single source of truth: one upsert path for manual + import ---------- #
+
+def upsert_student(db: Session, fields: dict) -> tuple[str, models.Student]:
+    """Insert or update a student keyed on admission_no.
+
+    Both the manual "Add student" form and the Excel/CSV import funnel through
+    here so the two paths can never diverge. Caller commits + syncs.
+    Returns ("created"|"updated", student).
+    """
+    existing = db.query(models.Student).filter(
+        models.Student.admission_no == fields["admission_no"]
+    ).first()
+    if existing:
+        for k, v in fields.items():
+            setattr(existing, k, v)
+        return "updated", existing
+    s = models.Student(**fields)
+    db.add(s)
+    return "created", s
+
+
+def _student_to_row(s: models.Student) -> dict:
+    """Flatten a Student into the canonical column layout (export + template share this)."""
+    return {
+        "admission_no":   s.admission_no or "",
+        "name":           s.name or "",
+        "student_class":  s.student_class or "",
+        "section":        s.section or "",
+        "aadhaar":        s.aadhaar or "",
+        "dob":            s.dob.isoformat() if s.dob else "",
+        "gender":         s.gender or "",
+        "parent_name":    s.parent_name or "",
+        "phone":          s.phone or "",
+        "address":        (s.address or "").replace("\n", " "),
+        "last_year_dues": s.last_year_dues or 0,
+        "status":         s.status or "active",
+        "admission_date": s.admission_date.isoformat() if s.admission_date else "",
+    }
+
+
+_TEMPLATE_ROW = {
+    "admission_no":   "A001",
+    "name":           "Example Student",
+    "student_class":  "5",
+    "section":        "A",
+    "aadhaar":        "123412341234",
+    "dob":            "2015-04-12",
+    "gender":         "M",
+    "parent_name":    "Parent Name",
+    "phone":          "9999900000",
+    "address":        "Street, City",
+    "last_year_dues": 0,
+    "status":         "active",
+    "admission_date": "2024-06-01",
+}
+
+
+def _all_students_ordered(db: Session) -> list[models.Student]:
+    return db.query(models.Student).order_by(
+        models.Student.student_class, models.Student.section, models.Student.name
+    ).all()
+
+
 @router.get("/export.csv")
 def export_csv(
     db: Session = Depends(get_db),
@@ -283,24 +347,8 @@ def export_csv(
     buf = io.StringIO()
     writer = csv.DictWriter(buf, fieldnames=CSV_COLUMNS, extrasaction="ignore")
     writer.writeheader()
-    for s in db.query(models.Student).order_by(
-        models.Student.student_class, models.Student.section, models.Student.name
-    ).all():
-        writer.writerow({
-            "admission_no":   s.admission_no or "",
-            "name":           s.name or "",
-            "student_class":  s.student_class or "",
-            "section":        s.section or "",
-            "aadhaar":        s.aadhaar or "",
-            "dob":            s.dob.isoformat() if s.dob else "",
-            "gender":         s.gender or "",
-            "parent_name":    s.parent_name or "",
-            "phone":          s.phone or "",
-            "address":        (s.address or "").replace("\n", " "),
-            "last_year_dues": s.last_year_dues or 0,
-            "status":         s.status or "active",
-            "admission_date": s.admission_date.isoformat() if s.admission_date else "",
-        })
+    for s in _all_students_ordered(db):
+        writer.writerow(_student_to_row(s))
     buf.seek(0)
     today = Date.today().isoformat()
     return StreamingResponse(
@@ -310,27 +358,29 @@ def export_csv(
     )
 
 
+@router.get("/export.xlsx")
+def export_xlsx(
+    db: Session = Depends(get_db),
+    _owner: models.User = Depends(require_owner),
+):
+    """Download all students as an .xlsx — same column layout as the template."""
+    rows = [_student_to_row(s) for s in _all_students_ordered(db)]
+    data = excel_io.build_xlsx(CSV_COLUMNS, rows, sheet_title="Students")
+    today = Date.today().isoformat()
+    return Response(
+        content=data,
+        media_type=excel_io.XLSX_MIME,
+        headers={"Content-Disposition": f'attachment; filename="students_{today}.xlsx"'},
+    )
+
+
 @router.get("/template.csv")
 def csv_template(_owner: models.User = Depends(require_owner)):
     """Download a blank CSV template with one example row."""
     buf = io.StringIO()
     writer = csv.DictWriter(buf, fieldnames=CSV_COLUMNS, extrasaction="ignore")
     writer.writeheader()
-    writer.writerow({
-        "admission_no":   "A001",
-        "name":           "Example Student",
-        "student_class":  "5",
-        "section":        "A",
-        "aadhaar":        "123412341234",
-        "dob":            "2015-04-12",
-        "gender":         "M",
-        "parent_name":    "Parent Name",
-        "phone":          "9999900000",
-        "address":        "Street, City",
-        "last_year_dues": 0,
-        "status":         "active",
-        "admission_date": "2024-06-01",
-    })
+    writer.writerow(_TEMPLATE_ROW)
     buf.seek(0)
     return StreamingResponse(
         iter([buf.getvalue()]),
@@ -339,49 +389,44 @@ def csv_template(_owner: models.User = Depends(require_owner)):
     )
 
 
-@router.post("/import")
-async def import_csv(
-    file: UploadFile = File(..., description="CSV file with student records"),
-    dry_run: bool = Query(False, description="Validate only — do not write to DB"),
-    db: Session = Depends(get_db),
-    _owner: models.User = Depends(require_owner),
-):
-    """Bulk import / sync students from a CSV file. Upserts by admission_no."""
-    if not file.filename.lower().endswith(".csv"):
-        raise HTTPException(400, "Please upload a .csv file")
+@router.get("/template.xlsx")
+def xlsx_template(_owner: models.User = Depends(require_owner)):
+    """Download a blank .xlsx template (correct headers + one sample row)."""
+    data = excel_io.build_xlsx(CSV_COLUMNS, [_TEMPLATE_ROW], sheet_title="Students")
+    return Response(
+        content=data,
+        media_type=excel_io.XLSX_MIME,
+        headers={"Content-Disposition": 'attachment; filename="students_template.xlsx"'},
+    )
 
-    raw = await file.read()
-    try:
-        text = raw.decode("utf-8-sig")
-    except UnicodeDecodeError:
-        try:
-            text = raw.decode("latin-1")
-        except Exception:
-            raise HTTPException(400, "Could not decode file. Save as UTF-8 CSV and retry.")
 
-    reader = csv.DictReader(io.StringIO(text))
-    if not reader.fieldnames:
-        raise HTTPException(400, "CSV is empty or missing a header row")
+def import_student_rows(db: Session, rows: list[dict], dry_run: bool = False) -> dict:
+    """Validate + upsert a batch of raw student rows. Shared by .csv and .xlsx.
 
-    created, updated, errors = 0, 0, []
-    for i, row in enumerate(reader, start=2):  # row 1 is the header
+    Returns the structured summary {created, updated, skipped, errors[]}.
+    Duplicate admission_no *within the same file* is skipped (never duplicated).
+    """
+    created, updated, skipped, errors = 0, 0, 0, []
+    seen_keys: set[str] = set()
+    for i, row in enumerate(rows, start=2):  # row 1 is the header
         try:
             fields = _row_to_fields(row)
         except ValueError as e:
             errors.append({"row": i, "error": str(e)})
             continue
 
-        existing = db.query(models.Student).filter(
-            models.Student.admission_no == fields["admission_no"]
-        ).first()
+        key = fields["admission_no"]
+        if key in seen_keys:
+            skipped += 1
+            errors.append({"row": i, "error": f"duplicate admission_no {key!r} in file — skipped"})
+            continue
+        seen_keys.add(key)
 
-        if existing:
-            for k, v in fields.items():
-                setattr(existing, k, v)
-            updated += 1
-        else:
-            db.add(models.Student(**fields))
+        action, _ = upsert_student(db, fields)
+        if action == "created":
             created += 1
+        else:
+            updated += 1
 
     if dry_run:
         db.rollback()
@@ -394,6 +439,23 @@ async def import_csv(
         "dry_run": dry_run,
         "created": created,
         "updated": updated,
+        "skipped": skipped,
         "errors": errors,
         "error_count": len(errors),
     }
+
+
+@router.post("/import")
+async def import_records(
+    file: UploadFile = File(..., description=".xlsx or .csv with student records"),
+    dry_run: bool = Query(False, description="Validate only — do not write to DB"),
+    db: Session = Depends(get_db),
+    _owner: models.User = Depends(require_owner),
+):
+    """Bulk import / sync students from .xlsx or .csv. Upserts by admission_no."""
+    raw = await file.read()
+    try:
+        rows = excel_io.read_tabular(file.filename, raw)
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    return import_student_rows(db, rows, dry_run=dry_run)

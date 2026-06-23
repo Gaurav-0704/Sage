@@ -17,10 +17,10 @@ export default function OwnerTeachers() {
   }, []);
   useEffect(load, [load]);
 
-  const downloadCsv = async (path, filename) => {
+  const downloadFile = async (path, filename) => {
     try {
       const r = await api.get(path, { responseType: "blob" });
-      const url = URL.createObjectURL(new Blob([r.data], { type: "text/csv" }));
+      const url = URL.createObjectURL(new Blob([r.data]));
       const a = document.createElement("a");
       a.href = url; a.download = filename; a.click();
       URL.revokeObjectURL(url);
@@ -66,19 +66,24 @@ export default function OwnerTeachers() {
         </div>
         <div className="flex gap-8 flex-wrap">
           <button className="btn btn-secondary"
-                  onClick={() => downloadCsv("/teachers/template.csv", "teachers_template.csv")}>
+                  onClick={() => downloadFile("/teachers/template.xlsx", "teachers_template.xlsx")}>
             ⬇ Template
           </button>
           <button className="btn btn-secondary"
-                  onClick={() => downloadCsv("/teachers/export.csv", "teachers.csv")}>
-            ⬇ Download CSV
+                  onClick={() => downloadFile("/teachers/export.xlsx", "teachers.xlsx")}>
+            ⬇ Excel
+          </button>
+          <button className="btn btn-secondary"
+                  onClick={() => downloadFile("/teachers/export.csv", "teachers.csv")}>
+            ⬇ CSV
           </button>
           <button className="btn btn-secondary"
                   disabled={importing}
                   onClick={() => fileRef.current?.click()}>
-            {importing ? "Uploading…" : "⬆ Upload CSV"}
+            {importing ? "Uploading…" : "⬆ Import"}
           </button>
-          <input ref={fileRef} type="file" accept=".csv,text/csv"
+          <input ref={fileRef} type="file"
+                 accept=".xlsx,.csv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                  style={{ display: "none" }} onChange={onFilePicked}/>
           <button className="btn" onClick={() => setCreating(true)}>+ Add teacher</button>
         </div>
@@ -151,7 +156,7 @@ function ImportResultModal({ result, onClose }) {
           <div className="error-banner">{result.error}</div>
         ) : (
           <>
-            <div className="grid grid-cols-3" style={{ marginBottom: 14 }}>
+            <div className="grid grid-cols-4" style={{ marginBottom: 14 }}>
               <div className="card stat" style={{ padding: 14 }}>
                 <div className="label">Created</div>
                 <div className="value green">{result.created}</div>
@@ -159,6 +164,10 @@ function ImportResultModal({ result, onClose }) {
               <div className="card stat" style={{ padding: 14 }}>
                 <div className="label">Updated</div>
                 <div className="value">{result.updated}</div>
+              </div>
+              <div className="card stat" style={{ padding: 14 }}>
+                <div className="label">Skipped</div>
+                <div className="value">{result.skipped || 0}</div>
               </div>
               <div className="card stat" style={{ padding: 14 }}>
                 <div className="label">Errors</div>
