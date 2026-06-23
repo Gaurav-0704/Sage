@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { api, fmtINR, fmtDate } from "../api";
+import { payOnline } from "../razorpay";
 
 const TABS = ["attendance", "marks", "fees", "assignments"];
 const STATUS_CLS = { present: "green", late: "amber", absent: "red", leave: "" };
@@ -38,7 +39,7 @@ export default function ParentChild() {
 
       {data && tab === "attendance" && <AttendanceView data={data} />}
       {data && tab === "marks" && <MarksView data={data} childId={id} />}
-      {data && tab === "fees" && <FeesView data={data} />}
+      {data && tab === "fees" && <FeesView data={data} childId={id} onPaid={load} />}
       {data && tab === "assignments" && <AssignmentsView data={data} />}
     </div>
   );
@@ -109,7 +110,21 @@ function MarksView({ data, childId }) {
   );
 }
 
-function FeesView({ data }) {
+function FeesView({ data, childId, onPaid }) {
+  const [paying, setPaying] = useState(false);
+  const [msg, setMsg] = useState("");
+
+  const pay = async () => {
+    setPaying(true); setMsg("");
+    try {
+      const p = await payOnline({ studentId: Number(childId), amount: data.due_amount, feeHead: "Online" });
+      setMsg(`Payment of ${fmtINR(p.amount)} successful.`);
+      onPaid();
+    } catch (e) {
+      setMsg(e.message || "Payment failed");
+    } finally { setPaying(false); }
+  };
+
   return (
     <>
       <div className="grid grid-cols-3 mb-16">
@@ -117,6 +132,15 @@ function FeesView({ data }) {
         <div className="card stat" style={{ padding: 16 }}><div className="label">Paid</div><div className="value green">{fmtINR(data.paid_amount)}</div></div>
         <div className="card stat" style={{ padding: 16 }}><div className="label">Due</div><div className={"value " + (data.due_amount > 0 ? "red" : "green")}>{fmtINR(data.due_amount)}</div></div>
       </div>
+
+      {data.due_amount > 0 && (
+        <div className="flex items-center gap-12 mb-16">
+          <button className="btn" disabled={paying} onClick={pay}>
+            {paying ? "Processing…" : `Pay ${fmtINR(data.due_amount)} online`}
+          </button>
+          {msg && <span className="text-2">{msg}</span>}
+        </div>
+      )}
       <div className="table-wrap">
         <table className="table">
           <thead><tr><th>Date</th><th>Mode</th><th>Head</th><th className="num">Amount</th></tr></thead>

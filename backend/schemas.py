@@ -434,6 +434,21 @@ class PaymentOut(BaseModel):
     note: Optional[str]
 
 
+class RazorpayOrderIn(BaseModel):
+    student_id: int
+    amount: float
+    fee_head: Optional[str] = None
+
+
+class RazorpayVerifyIn(BaseModel):
+    student_id: int
+    amount: float
+    fee_head: Optional[str] = None
+    razorpay_order_id: str
+    razorpay_payment_id: str
+    razorpay_signature: str
+
+
 # ---------------- EXPENSES ---------------- #
 
 class ExpenseCreate(BaseModel):

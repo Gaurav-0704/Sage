@@ -26,12 +26,60 @@ from sqlalchemy.orm import Session
 import models
 import schemas
 import notifications
+import razorpay_client
 from dependencies import (
-    get_db, require_owner, require_can_collect,
+    get_db, require_owner, require_can_collect, require_school_member,
 )
 from school_constants import class_sort_key, PAYMENT_MODES
 
 SCHOOL_NAME = "Sage"
+
+
+def record_payment(db: Session, student: models.Student, *, amount: float, mode: str,
+                   fee_head: str | None = None, reference: str | None = None,
+                   note: str | None = None, received_by: int | None = None) -> models.Payment:
+    """Create a payment, settle dues oldest-first, notify, commit.
+
+    Single source of truth shared by manual entry and the Razorpay flow so the
+    settlement + notification logic can never diverge.
+    """
+    payment = models.Payment(
+        student_id=student.id, amount=float(amount),
+        date=date.today(), mode=mode, fee_head=fee_head,
+        reference=reference, note=note, received_by=received_by,
+    )
+    db.add(payment)
+
+    remaining = float(amount)
+    open_fees = db.query(models.Fee).filter(
+        models.Fee.student_id == student.id,
+        models.Fee.due_amount > 0,
+    ).order_by(models.Fee.id).all()
+    for f in open_fees:
+        if remaining <= 0:
+            break
+        applied = min(remaining, f.due_amount)
+        f.paid_amount += applied
+        f.due_amount -= applied
+        remaining -= applied
+    if remaining > 0 and (student.last_year_dues or 0) > 0:
+        applied = min(remaining, student.last_year_dues)
+        student.last_year_dues -= applied
+        remaining -= applied
+
+    db.commit()
+    db.refresh(payment)
+
+    due_now = sum(f.due_amount for f in db.query(models.Fee).filter(
+        models.Fee.student_id == student.id).all()) + (student.last_year_dues or 0)
+    notifications.notify_student(
+        db, student,
+        f"Fee payment received — ₹{payment.amount:,.0f}",
+        f"Dear parent/guardian,\n\nWe have received a payment of "
+        f"₹{payment.amount:,.0f} ({payment.mode}) for {student.name} "
+        f"(Class {student.student_class}).\n"
+        f"Outstanding balance: ₹{max(0.0, due_now):,.0f}.\n\nThank you,\n{SCHOOL_NAME}")
+    return payment
 
 router = APIRouter(tags=["fees"])
 
@@ -162,59 +210,81 @@ def make_payment(payload: schemas.PaymentCreate,
     if not student:
         raise HTTPException(400, "Student not found.")
 
-    # ----- Record the payment ----- #
-    payment = models.Payment(
-        student_id=payload.student_id,
-        amount=float(payload.amount),
-        date=payload.date or date.today(),
-        mode=payload.mode,
-        fee_head=payload.fee_head,
-        reference=payload.reference,
-        note=payload.note,
-        received_by=user.id,
-    )
-    db.add(payment)
+    # Overpayment isn't rejected — parents sometimes pay round numbers; the
+    # excess shows as a credit (paid > billed) in the student detail view.
+    return record_payment(
+        db, student, amount=payload.amount, mode=payload.mode,
+        fee_head=payload.fee_head, reference=payload.reference,
+        note=payload.note, received_by=user.id)
 
-    # ----- Settle against dues, oldest first ----- #
-    remaining = float(payload.amount)
 
-    # 1. This year's fee bills (oldest id first).
-    open_fees = db.query(models.Fee).filter(
-        models.Fee.student_id == payload.student_id,
-        models.Fee.due_amount > 0,
-    ).order_by(models.Fee.id).all()
-    for f in open_fees:
-        if remaining <= 0:
-            break
-        applied = min(remaining, f.due_amount)
-        f.paid_amount += applied
-        f.due_amount -= applied
-        remaining -= applied
+# ---------------- Razorpay online payment ---------------- #
 
-    # 2. Last-year carry-forward dues.
-    if remaining > 0 and (student.last_year_dues or 0) > 0:
-        applied = min(remaining, student.last_year_dues)
-        student.last_year_dues -= applied
-        remaining -= applied
+def _can_pay_for(db: Session, user: models.User, student: models.Student) -> bool:
+    """Who may pay a given student's fees online."""
+    if user.role in ("owner", "staff", "teacher"):
+        return True
+    if user.role == "student":
+        return student.user_id == user.id
+    if user.role == "parent":
+        return db.query(models.ParentLink).filter(
+            models.ParentLink.parent_user_id == user.id,
+            models.ParentLink.student_id == student.id,
+            models.ParentLink.status == "approved",
+        ).first() is not None
+    return False
 
-    # 3. Anything left is a credit on the student. We don't reject overpayment
-    #    — sometimes parents pay round numbers — but we keep it visible in the
-    #    student detail view (paid > total_billed).
 
-    db.commit()
-    db.refresh(payment)
+@router.get("/payments/razorpay/config")
+def razorpay_config(_user: models.User = Depends(require_school_member)):
+    """Tells the UI whether to offer online payment + the public key id."""
+    return {"enabled": razorpay_client.enabled(),
+            "key_id": razorpay_client.KEY_ID if razorpay_client.enabled() else None}
 
-    # Notify the student + their approved parents that a payment was recorded.
-    due_now = sum(f.due_amount for f in db.query(models.Fee).filter(
-        models.Fee.student_id == student.id).all()) + (student.last_year_dues or 0)
-    notifications.notify_student(
-        db, student,
-        f"Fee payment received — ₹{payment.amount:,.0f}",
-        f"Dear parent/guardian,\n\nWe have received a payment of "
-        f"₹{payment.amount:,.0f} ({payment.mode}) for {student.name} "
-        f"(Class {student.student_class}).\n"
-        f"Outstanding balance: ₹{max(0.0, due_now):,.0f}.\n\nThank you,\n{SCHOOL_NAME}")
-    return payment
+
+@router.post("/payments/razorpay/order")
+def razorpay_order(payload: schemas.RazorpayOrderIn,
+                   db: Session = Depends(get_db),
+                   user: models.User = Depends(require_school_member)):
+    if not razorpay_client.enabled():
+        raise HTTPException(503, "Online payment is not configured.")
+    if payload.amount is None or payload.amount <= 0:
+        raise HTTPException(400, "Amount must be greater than zero.")
+    student = db.query(models.Student).filter(
+        models.Student.id == payload.student_id).first()
+    if not student:
+        raise HTTPException(404, "Student not found.")
+    if not _can_pay_for(db, user, student):
+        raise HTTPException(403, "Not allowed to pay for this student.")
+    try:
+        order = razorpay_client.create_order(
+            payload.amount, receipt=f"sage-{student.id}",
+            notes={"student_id": str(student.id), "fee_head": payload.fee_head or ""})
+    except RuntimeError as e:
+        raise HTTPException(502, str(e))
+    return {"order_id": order["id"], "amount": order["amount"],
+            "currency": order["currency"], "key_id": razorpay_client.KEY_ID,
+            "student_name": student.name}
+
+
+@router.post("/payments/razorpay/verify", response_model=schemas.PaymentOut)
+def razorpay_verify(payload: schemas.RazorpayVerifyIn,
+                    db: Session = Depends(get_db),
+                    user: models.User = Depends(require_school_member)):
+    student = db.query(models.Student).filter(
+        models.Student.id == payload.student_id).first()
+    if not student:
+        raise HTTPException(404, "Student not found.")
+    if not _can_pay_for(db, user, student):
+        raise HTTPException(403, "Not allowed to pay for this student.")
+    if not razorpay_client.verify_signature(
+            payload.razorpay_order_id, payload.razorpay_payment_id,
+            payload.razorpay_signature):
+        raise HTTPException(400, "Payment signature verification failed.")
+    return record_payment(
+        db, student, amount=payload.amount, mode="bank",
+        fee_head=payload.fee_head, reference=payload.razorpay_payment_id,
+        note="Razorpay online payment", received_by=user.id)
 
 
 # ---------- Printable receipt ---------- #

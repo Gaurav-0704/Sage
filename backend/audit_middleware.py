@@ -34,6 +34,7 @@ _SUMMARIES = [
     (r"PUT",    r"^/teachers/\d+$",               "Updated teacher"),
     (r"DELETE", r"^/teachers/\d+$",               "Deleted teacher"),
     (r"POST",   r"^/payments$",                   "Recorded payment"),
+    (r"POST",   r"^/payments/razorpay/verify$",   "Recorded online payment"),
     (r"POST",   r"^/expenses$",                   "Recorded expense"),
     (r"DELETE", r"^/expenses/\d+$",               "Deleted expense"),
     (r"POST",   r"^/fee-structures$",             "Created fee structure"),
