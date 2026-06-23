@@ -624,8 +624,14 @@ button { font-family: inherit; font-size: 14px; cursor: pointer; }
   .sidebar-backdrop.open { display: block; }
 
   .main { padding: 16px; padding-bottom: 64px; }
-  .page-header { flex-direction: column; align-items: stretch; }
+  .page-header { flex-direction: column; align-items: stretch; gap: 12px; }
   .page-title { font-size: 20px; }
+
+  /* Toolbar button groups wrap instead of overflowing the screen */
+  .page-header .flex { flex-wrap: wrap; }
+
+  /* 16px inputs stop iOS Safari from zooming in on focus */
+  .input, .select, textarea.input { font-size: 16px; }
 
   .grid-cols-4, .grid-cols-3, .grid-cols-2 { grid-template-columns: 1fr; }
   .form-grid { grid-template-columns: 1fr; }
@@ -644,4 +650,17 @@ button { font-family: inherit; font-size: 14px; cursor: pointer; }
 
   .auth-card { padding: 24px; }
   .auth-card .btn { padding: 14px; font-size: 15px; }
+}
+
+/* ---------- Small phones ---------- */
+@media (max-width: 480px) {
+  .main { padding: 12px; }
+  .card { padding: 16px; }
+  .tile-grid { grid-template-columns: 1fr; }
+  .class-grid { grid-template-columns: 1fr; }
+
+  /* Full-width primary actions are easier to tap one-handed */
+  .page-header .flex .btn { flex: 1 1 auto; }
+  .stat .value { font-size: 22px; }
+  .modal { padding: 18px; }
 }
