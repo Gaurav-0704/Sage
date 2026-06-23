@@ -1,6 +1,8 @@
 import axios from "axios";
 
-export const API_BASE = "http://127.0.0.1:8000";
+// Build-time API base. Set REACT_APP_API_BASE to the backend's public URL when
+// deploying (Railway); falls back to the local dev server.
+export const API_BASE = process.env.REACT_APP_API_BASE || "http://127.0.0.1:8000";
 
 export const TOKEN_KEY = "sage_token";
 export const USER_KEY  = "sage_user";
