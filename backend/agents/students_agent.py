@@ -85,7 +85,7 @@ def students_by_class(
     return items
 
 
-@router.get("/{student_id}/profile", response_model=schemas.StudentProfileOut)
+@router.get("/{student_id:int}/profile", response_model=schemas.StudentProfileOut)
 def student_profile(
     student_id: int,
     db: Session = Depends(get_db),
@@ -143,7 +143,7 @@ def list_students(
     return out
 
 
-@router.get("/{student_id}", response_model=schemas.StudentDetailOut)
+@router.get("/{student_id:int}", response_model=schemas.StudentDetailOut)
 def get_student(
     student_id: int,
     db: Session = Depends(get_db),
@@ -183,7 +183,7 @@ def create_student(
     return s
 
 
-@router.put("/{student_id}", response_model=schemas.StudentOut)
+@router.put("/{student_id:int}", response_model=schemas.StudentOut)
 def update_student(
     student_id: int,
     payload: schemas.StudentUpdate,
@@ -201,7 +201,7 @@ def update_student(
     return s
 
 
-@router.delete("/{student_id}")
+@router.delete("/{student_id:int}")
 def delete_student(
     student_id: int,
     db: Session = Depends(get_db),
