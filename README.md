@@ -8,25 +8,42 @@ Sage is not a CRUD app with a chatbot bolted on. Claude is the primary interface
 
 ## Quick start
 
+Pick one — both are a single command after cloning.
+
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/Gaurav-0704/Sage.git
 cd Sage
-cp .env.example .env        # add your ANTHROPIC_API_KEY
-python run.py               # installs deps + starts both servers
 ```
 
-- **API** → http://localhost:8000 &nbsp;·&nbsp; `/docs` for Swagger
-- **UI** → http://localhost:3000
+**Option A — Docker (only Docker needed, nothing else to install):**
 
-Default credentials:
+```bash
+docker compose up --build
+# UI → http://localhost:3000      API → http://localhost:8000/api
+# Want sample data?  SEED_DEMO=true docker compose up --build
+```
+
+**Option B — no Docker (needs Python 3.11+ and Node 18+):**
+
+```bash
+python run.py               # creates a venv, installs backend + frontend deps, starts both
+# UI → http://localhost:3000      API → http://localhost:8000/api  ·  /docs for Swagger
+```
+
+Sign in with the seeded owner account, then change the password in **Settings**:
+
 - Owner: `owner@sage.school` / `owner123`
 - Staff: `staff@sage.school` / `staff123`
+
+The AI assistant is optional — add `ANTHROPIC_API_KEY` to `.env` (`cp .env.example .env`) to enable it. Everything else works without any keys.
 
 ```bash
 python run.py --setup       # install deps only, don't start
 python run.py --backend     # API only
 python run.py --frontend    # UI only
 ```
+
+**Deploy to the cloud:** one-click-ish on Railway (single service + Postgres) — see [DEPLOY.md](DEPLOY.md).
 
 ---
 
@@ -57,11 +74,11 @@ A scanner agent checks DB health, imports all agent modules, and optionally runs
 
 | Layer | Technology |
 |-------|-----------|
-| Backend | Python · FastAPI · SQLAlchemy · SQLite |
-| Frontend | React · Recharts · Axios |
+| Backend | Python · FastAPI · SQLAlchemy · SQLite (dev) / Postgres (prod) · Alembic |
+| Frontend | React 19 · Recharts · Axios · PWA (installable + offline shell) |
 | AI | Anthropic Claude API (tool use + SSE streaming) |
-| Auth | JWT · bcrypt |
-| Infra | Docker Compose |
+| Auth | JWT · bcrypt · roles: owner / staff / teacher / student / parent |
+| Infra | Docker · docker-compose · Railway |
 
 ---
 
@@ -69,7 +86,8 @@ A scanner agent checks DB health, imports all agent modules, and optionally runs
 
 ```bash
 cd backend
-pytest tests/ -v            # 24 tests — fees, payments, risk scoring
+pytest -q                   # 86 tests — fees, payments, attendance, timetable,
+                            # parents, Excel sync, report cards, Razorpay, more
 ```
 
 ---
@@ -85,13 +103,14 @@ docker compose up --build
 
 ## Architecture
 
-The backend has **17 agents**, each owning one domain:
+The backend has **21+ agents**, each owning one domain:
 
 ```
 auth · students · fees · finance · expenses · reports
 tiles · exams · teachers · assignments
 teacher_self · student_self
 audit · scanner · ai · records · insights
+attendance · timetable · parents · announcements · config
 ```
 
 Each agent is a self-contained FastAPI router mounted in `main.py`. `AuditMiddleware` intercepts every mutating request and writes a human-readable log entry. The `ScannerAgent` schedules itself at startup using `asyncio`.

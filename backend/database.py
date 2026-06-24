@@ -6,7 +6,8 @@ from sqlalchemy.orm import sessionmaker
 
 # DATABASE_URL is env-driven for deploy. Defaults to local SQLite so dev needs
 # no setup. On Railway, set it to the Postgres plugin's connection string.
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./school_v4.db")
+# `or` (not getenv default) so an empty env var also falls back to SQLite.
+DATABASE_URL = os.getenv("DATABASE_URL") or "sqlite:///./school_v4.db"
 
 # Railway/Heroku hand out "postgres://"; SQLAlchemy 2.0 wants "postgresql://".
 if DATABASE_URL.startswith("postgres://"):

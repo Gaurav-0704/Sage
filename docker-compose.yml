@@ -9,6 +9,10 @@ services:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - ANTHROPIC_MODEL=${ANTHROPIC_MODEL:-claude-haiku-4-5-20251001}
       - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+      # Optional: point at Postgres; defaults to SQLite inside the container.
+      - DATABASE_URL=${DATABASE_URL:-}
+      # Set SEED_DEMO=true to populate sample students/teachers/marks on first run.
+      - SEED_DEMO=${SEED_DEMO:-false}
     volumes:
       - sage_db:/app/data
     healthcheck:
