@@ -3,10 +3,12 @@
 # Deploy the repo with the default Root Directory and Railway uses this file.
 
 # 1) Build the static frontend (API base is same-origin /api).
-FROM node:18-alpine AS fe
+FROM node:20-alpine AS fe
 WORKDIR /fe
 COPY frontend/package*.json ./
-RUN npm ci --silent
+# --legacy-peer-deps: React 19 + react-scripts 5 have a peer-dep mismatch that
+# trips npm's strict resolver; this is the standard CRA workaround.
+RUN npm ci --legacy-peer-deps --no-audit --no-fund
 COPY frontend/ ./
 ENV REACT_APP_API_BASE=/api
 RUN npm run build
