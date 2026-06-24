@@ -9,6 +9,7 @@ from sqlalchemy import func
 
 import models
 import schemas
+from school_constants import month_bounds
 from dependencies import get_db, require_owner
 
 router = APIRouter(prefix="/finance", tags=["finance"])
@@ -37,17 +38,17 @@ def summary(db: Session = Depends(get_db),
     cash_acct, cash_bal = _balance(db, "cash")
     bank_acct, bank_bal = _balance(db, "bank")
     today = date.today()
-    month_prefix = today.strftime("%Y-%m")
+    m_start, m_next = month_bounds(today)
 
     today_collected = db.query(func.coalesce(func.sum(models.Payment.amount), 0.0)) \
         .filter(models.Payment.date == today).scalar() or 0.0
     month_collected = db.query(func.coalesce(func.sum(models.Payment.amount), 0.0)) \
-        .filter(func.strftime("%Y-%m", models.Payment.date) == month_prefix).scalar() or 0.0
+        .filter(models.Payment.date >= m_start, models.Payment.date < m_next).scalar() or 0.0
 
     today_expense = db.query(func.coalesce(func.sum(models.Expense.amount), 0.0)) \
         .filter(models.Expense.date == today).scalar() or 0.0
     month_expense = db.query(func.coalesce(func.sum(models.Expense.amount), 0.0)) \
-        .filter(func.strftime("%Y-%m", models.Expense.date) == month_prefix).scalar() or 0.0
+        .filter(models.Expense.date >= m_start, models.Expense.date < m_next).scalar() or 0.0
 
     return schemas.FinanceSummary(
         cash=schemas.AccountOut(

@@ -39,3 +39,17 @@ EXPENSE_CATEGORIES = ["salary", "utilities", "supplies",
                        "maintenance", "transport", "other"]
 
 PAYMENT_MODES = ("cash", "bank")
+
+
+def month_bounds(d):
+    """First day of d's month and first day of the next month.
+
+    Use as a portable `date >= start AND date < nxt` filter instead of
+    SQLite-only strftime("%Y-%m", ...), so the same query runs on Postgres.
+    """
+    start = d.replace(day=1)
+    if start.month == 12:
+        nxt = start.replace(year=start.year + 1, month=1)
+    else:
+        nxt = start.replace(month=start.month + 1)
+    return start, nxt

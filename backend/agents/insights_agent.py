@@ -18,6 +18,7 @@ from sqlalchemy.orm import Session
 
 import models
 import schemas
+from school_constants import month_bounds
 from dependencies import get_db, require_owner
 
 router = APIRouter(prefix="/insights", tags=["insights"])
@@ -42,8 +43,9 @@ ANALYSIS_PROMPT = (
 
 def _build_snapshot(db: Session) -> dict:
     today = date.today()
-    month_prefix = today.strftime("%Y-%m")
-    prev_month = (today.replace(day=1) - timedelta(days=1)).strftime("%Y-%m")
+    m_start, m_next = month_bounds(today)
+    p_start, _ = month_bounds(m_start - timedelta(days=1))   # previous month
+    p_next = m_start
 
     total_students  = db.query(func.count(models.Student.id)).scalar() or 0
     active_students = db.query(func.count(models.Student.id)).filter(
@@ -55,17 +57,17 @@ def _build_snapshot(db: Session) -> dict:
     total_due        = max(0.0, total_fee_billed + last_yr_dues - total_collected)
 
     collected_month = float(db.query(func.coalesce(func.sum(models.Payment.amount), 0)).filter(
-        func.strftime("%Y-%m", models.Payment.date) == month_prefix).scalar() or 0)
+        models.Payment.date >= m_start, models.Payment.date < m_next).scalar() or 0)
     collected_prev  = float(db.query(func.coalesce(func.sum(models.Payment.amount), 0)).filter(
-        func.strftime("%Y-%m", models.Payment.date) == prev_month).scalar() or 0)
+        models.Payment.date >= p_start, models.Payment.date < p_next).scalar() or 0)
     expense_month   = float(db.query(func.coalesce(func.sum(models.Expense.amount), 0)).filter(
-        func.strftime("%Y-%m", models.Expense.date) == month_prefix).scalar() or 0)
+        models.Expense.date >= m_start, models.Expense.date < m_next).scalar() or 0)
     expense_prev    = float(db.query(func.coalesce(func.sum(models.Expense.amount), 0)).filter(
-        func.strftime("%Y-%m", models.Expense.date) == prev_month).scalar() or 0)
+        models.Expense.date >= p_start, models.Expense.date < p_next).scalar() or 0)
 
     cat_rows = db.query(
         models.Expense.category, func.sum(models.Expense.amount)
-    ).filter(func.strftime("%Y-%m", models.Expense.date) == month_prefix
+    ).filter(models.Expense.date >= m_start, models.Expense.date < m_next
     ).group_by(models.Expense.category).all()
     expense_by_category = {c: round(float(a)) for c, a in cat_rows}
 

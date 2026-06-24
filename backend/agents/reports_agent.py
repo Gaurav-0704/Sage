@@ -9,6 +9,7 @@ from sqlalchemy import func
 
 import models
 import schemas
+from school_constants import month_bounds
 from dependencies import get_db, require_owner
 
 router = APIRouter(prefix="/reports", tags=["reports"])
@@ -32,11 +33,11 @@ def dashboard(db: Session = Depends(get_db),
     total_due = max(0.0, total_fee_value - total_collected)
 
     today = date.today()
-    month_prefix = today.strftime("%Y-%m")
+    m_start, m_next = month_bounds(today)
     collected_today = db.query(func.coalesce(func.sum(models.Payment.amount), 0.0)) \
         .filter(models.Payment.date == today).scalar() or 0.0
     collected_month = db.query(func.coalesce(func.sum(models.Payment.amount), 0.0)) \
-        .filter(func.strftime("%Y-%m", models.Payment.date) == month_prefix).scalar() or 0.0
+        .filter(models.Payment.date >= m_start, models.Payment.date < m_next).scalar() or 0.0
 
     def acct_balance(name: str) -> float:
         opening = db.query(func.coalesce(func.sum(models.Account.opening_balance), 0.0)) \
@@ -93,14 +94,15 @@ def daily(days: int = 30,
 def monthly(months: int = 12,
             db: Session = Depends(get_db),
             _owner: models.User = Depends(require_owner)):
-    pay = dict(db.query(
-        func.strftime("%Y-%m", models.Payment.date),
-        func.sum(models.Payment.amount),
-    ).group_by(func.strftime("%Y-%m", models.Payment.date)).all())
-    exp = dict(db.query(
-        func.strftime("%Y-%m", models.Expense.date),
-        func.sum(models.Expense.amount),
-    ).group_by(func.strftime("%Y-%m", models.Expense.date)).all())
+    # Bucket by YYYY-MM in Python so the grouping is DB-portable (no strftime).
+    pay: dict[str, float] = {}
+    for d, a in db.query(models.Payment.date, models.Payment.amount).all():
+        if d:
+            pay[d.strftime("%Y-%m")] = pay.get(d.strftime("%Y-%m"), 0.0) + float(a or 0)
+    exp: dict[str, float] = {}
+    for d, a in db.query(models.Expense.date, models.Expense.amount).all():
+        if d:
+            exp[d.strftime("%Y-%m")] = exp.get(d.strftime("%Y-%m"), 0.0) + float(a or 0)
 
     today = date.today()
     out = []
