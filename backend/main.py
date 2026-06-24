@@ -12,6 +12,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, JSONResponse
 from sqlalchemy import text
 
 import models
@@ -41,6 +43,7 @@ from agents import (
     timetable_agent,
     parents_agent,
     announcements_agent,
+    config_agent,
 )
 
 SCHOOL_NAME = "Sage"
@@ -143,11 +146,27 @@ def seed_defaults():
 _scanner_task = None
 
 
+def _maybe_seed_demo():
+    """Populate demo data when SEED_DEMO is truthy (idempotent)."""
+    if os.getenv("SEED_DEMO", "").lower() not in ("1", "true", "yes"):
+        return
+    import demo_seed
+    db = SessionLocal()
+    try:
+        if demo_seed.seed_demo(db):
+            print("[demo_seed] demo data seeded")
+    except Exception as e:
+        print(f"[demo_seed] failed: {e}")
+    finally:
+        db.close()
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global _scanner_task
     _migrate()
     seed_defaults()
+    _maybe_seed_demo()
     _scanner_task = asyncio.create_task(scanner_agent.scheduler_loop())
     yield
     if _scanner_task:
@@ -193,6 +212,8 @@ app.add_middleware(
 #   audit        — read-only view of the audit log
 #   scanner      — nightly self-check + on-demand run
 #   ai           — Owner-only assistant; proposes actions, never auto-applies
+# Every agent is mounted under /api so a single service can also serve the React
+# app at / without route collisions (e.g. the SPA's /students vs the API's).
 for r in (auth_agent.router, students_agent.router, fees_agent.router,
           finance_agent.router, expenses_agent.router, reports_agent.router,
           tiles_agent.router, exams_agent.router, teachers_agent.router,
@@ -200,23 +221,47 @@ for r in (auth_agent.router, students_agent.router, fees_agent.router,
           student_self_agent.router, audit_agent.router, scanner_agent.router,
           ai_agent.router, records_agent.router, insights_agent.router,
           attendance_agent.router, timetable_agent.router,
-          parents_agent.router, announcements_agent.router):
-    app.include_router(r)
+          parents_agent.router, announcements_agent.router, config_agent.router):
+    app.include_router(r, prefix="/api")
 
 
-@app.get("/")
+@app.get("/healthz")
 def health():
     return {
         "name": "Sage",
         "tagline": "AI-powered School ERP",
         "version": "1.0.0",
-        "agents": [
-            "auth", "students", "fees", "finance", "expenses",
-            "reports", "tiles", "exams",
-            "teachers", "assignments",
-            "teacher_self", "student_self",
-            "audit", "scanner", "ai", "records", "insights",
-            "attendance", "timetable", "parents", "announcements",
-        ],
         "status": "ok",
     }
+
+
+# ---- Single-service mode: serve the built React app from / ----
+# When FRONTEND_BUILD_DIR points at a CRA build, FastAPI serves the SPA and its
+# assets here; the API stays under /api. In two-service mode the dir is absent
+# and / falls back to the health JSON.
+FRONTEND_BUILD_DIR = os.getenv(
+    "FRONTEND_BUILD_DIR",
+    os.path.join(os.path.dirname(__file__), "..", "frontend", "build"),
+)
+
+if os.path.isdir(FRONTEND_BUILD_DIR):
+    _static = os.path.join(FRONTEND_BUILD_DIR, "static")
+    if os.path.isdir(_static):
+        app.mount("/static", StaticFiles(directory=_static), name="static")
+
+    _index = os.path.join(FRONTEND_BUILD_DIR, "index.html")
+
+    @app.get("/{full_path:path}")
+    def spa(full_path: str):
+        # Never let the SPA swallow API calls.
+        if full_path.startswith("api/"):
+            return JSONResponse({"detail": "Not Found"}, status_code=404)
+        candidate = os.path.join(FRONTEND_BUILD_DIR, full_path)
+        if full_path and os.path.isfile(candidate):
+            return FileResponse(candidate)
+        return FileResponse(_index)
+else:
+    @app.get("/")
+    def root():
+        return {"name": "Sage", "status": "ok",
+                "note": "API is under /api; set FRONTEND_BUILD_DIR to serve the SPA here."}

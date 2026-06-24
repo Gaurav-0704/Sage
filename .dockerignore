@@ -1,0 +1,11 @@
+**/node_modules
+**/build
+**/__pycache__
+**/.venv
+**/*.db
+**/*.sqlite*
+**/.pytest_cache
+backend/uploads
+.git
+.claude
+data/students_master.csv

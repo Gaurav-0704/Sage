@@ -78,9 +78,11 @@ def build_report_card(db: Session, student: models.Student, exam: models.Exam) -
     pdf.add_page()
     pdf.set_auto_page_break(auto=True, margin=15)
 
-    # Header
+    # Header — use the editable school name from settings.
+    from agents import config_agent
+    school = config_agent.get_setting(db, "school_name") or SCHOOL_NAME
     pdf.set_font("Helvetica", "B", 20)
-    pdf.cell(0, 12, SCHOOL_NAME, ln=True, align="C")
+    pdf.cell(0, 12, school, ln=True, align="C")
     pdf.set_font("Helvetica", "", 12)
     pdf.cell(0, 7, "Report Card", ln=True, align="C")
     pdf.ln(4)

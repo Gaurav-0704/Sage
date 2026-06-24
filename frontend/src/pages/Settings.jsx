@@ -16,11 +16,96 @@ export default function Settings() {
         </div>
       </div>
 
+      {user?.role === "owner" && <SchoolCard/>}
+      {user?.role === "owner" && <IntegrationsCard/>}
       <ProfileCard user={user}/>
       <PasswordCard/>
       <DisplayCard/>
       <NotificationsCard user={user}/>
       <AccountCard user={user}/>
+    </div>
+  );
+}
+
+/* ---------- School profile (owner) ---------- */
+function SchoolCard() {
+  const [f, setF] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState(""); const [err, setErr] = useState("");
+  const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
+
+  useEffect(() => {
+    api.get("/config").then((r) => setF(r.data.profile)).catch(() => setF({}));
+  }, []);
+
+  const save = async (e) => {
+    e.preventDefault(); setMsg(""); setErr(""); setBusy(true);
+    try {
+      await api.put("/config/profile", f);
+      setMsg("School details saved. They appear on receipts and report cards.");
+    } catch (e) { setErr(e?.response?.data?.detail || "Couldn't save"); }
+    finally { setBusy(false); }
+  };
+
+  if (!f) return null;
+  return (
+    <form className="settings-section" onSubmit={save}>
+      <h3>School details</h3>
+      <div className="subtitle">Used on receipts, report cards and across the app. Edit any time.</div>
+      {err && <div className="error-banner">{err}</div>}
+      {msg && <div className="success-banner">{msg}</div>}
+      <div className="form-grid">
+        <div className="form-row">
+          <label>School name</label>
+          <input className="input" value={f.school_name || ""} onChange={set("school_name")}/>
+        </div>
+        <div className="form-row">
+          <label>Phone</label>
+          <input className="input" value={f.school_phone || ""} onChange={set("school_phone")}/>
+        </div>
+        <div className="form-row" style={{ gridColumn: "1 / -1" }}>
+          <label>Address</label>
+          <input className="input" value={f.school_address || ""} onChange={set("school_address")}/>
+        </div>
+        <div className="form-row">
+          <label>Academic year</label>
+          <input className="input" value={f.academic_year || ""} onChange={set("academic_year")}/>
+        </div>
+      </div>
+      <button className="btn" disabled={busy}>{busy ? "Saving…" : "Save school details"}</button>
+    </form>
+  );
+}
+
+/* ---------- Integrations status (owner) ---------- */
+function IntegrationsCard() {
+  const [data, setData] = useState(null);
+  useEffect(() => { api.get("/config").then((r) => setData(r.data.integrations)).catch(() => {}); }, []);
+  if (!data) return null;
+
+  const rows = [
+    ["AI assistant", data.ai],
+    ["Email notifications", data.email],
+    ["Online payments (Razorpay)", data.payments],
+  ];
+  return (
+    <div className="settings-section">
+      <h3>Integrations</h3>
+      <div className="subtitle">
+        These are configured with environment variables on your host (e.g. Railway → Variables),
+        so secrets never live in the app. Status below; set the listed variable then redeploy.
+      </div>
+      {rows.map(([label, info]) => (
+        <div className="toggle-row" key={label}>
+          <div>
+            <div className="label">{label}</div>
+            <div className="desc"><code>{info.env}</code></div>
+          </div>
+          <span className={"pill " + (info.configured ? "green" : "amber")}>
+            {info.configured ? "Configured" : "Not set"}
+          </span>
+        </div>
+      ))}
     </div>
   );
 }

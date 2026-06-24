@@ -342,6 +342,16 @@ class Attendance(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
+class Setting(Base):
+    """Editable key/value app settings (school profile, etc.). Non-secret —
+    secrets stay in environment variables."""
+    __tablename__ = "settings"
+
+    key = Column(String, primary_key=True)
+    value = Column(Text)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
 class Announcement(Base):
     """Notice-board broadcast. audience targets a role group; student_class
     optionally narrows to one class (and that class's parents)."""

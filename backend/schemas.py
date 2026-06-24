@@ -339,6 +339,20 @@ class StudentAttendanceOut(BaseModel):
     records: List[AttendanceOut]
 
 
+# ---------------- CONFIG / SETTINGS ---------------- #
+
+class SchoolProfileIn(BaseModel):
+    school_name: Optional[str] = None
+    school_address: Optional[str] = None
+    school_phone: Optional[str] = None
+    academic_year: Optional[str] = None
+
+
+class ConfigOut(BaseModel):
+    profile: dict
+    integrations: dict
+
+
 # ---------------- ANNOUNCEMENTS ---------------- #
 
 ANNOUNCEMENT_AUDIENCES = ("all", "students", "parents", "teachers", "staff")

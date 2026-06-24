@@ -63,8 +63,10 @@ _SUMMARIES = [
 
 
 def _summarize(method: str, path: str) -> str:
+    # Routes are mounted under /api; match the summaries against the bare path.
+    bare = path[4:] if path.startswith("/api/") else path
     for m, pat, txt in _SUMMARIES:
-        if method == m and re.match(pat, path):
+        if method == m and re.match(pat, bare):
             return txt
     return f"{method} {path}"
 
