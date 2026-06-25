@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { api, fmtINR } from "../api";
+import { api } from "../api";
 import { useAuth } from "../auth";
 import { openReceipt } from "../receipt";
 import CredentialsCard from "../components/CredentialsCard";

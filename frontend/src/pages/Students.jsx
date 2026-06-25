@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import { api, fmtINR } from "../api";
-import { CLASS_ORDER as CLASSES, classSortKey } from "../school";
+import { CLASS_ORDER as CLASSES } from "../school";
 
 export default function Students() {
   const [list, setList] = useState([]);

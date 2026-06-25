@@ -47,13 +47,34 @@ python run.py --frontend    # UI only
 
 ---
 
+## What's inside
+
+A complete K–10 school system, not a demo:
+
+- **Students & teachers** — records, roster, and two-way **Excel/CSV** sync (import, export, template) that shares the exact same save path as the manual "Add" form, so the sheet and the app never drift apart.
+- **Attendance** — daily *and* period-wise; teachers mark their classes, owners/parents/students view.
+- **Timetable** — weekly class schedule with **conflict detection** (no double-booked teacher, no clashing slot).
+- **Fees** — fee structures, bills, payments, printable receipts, and **online payment via Razorpay** (₹/en-IN), all settling against dues automatically.
+- **Exams & marks** — gradebook plus a generated **report-card PDF** per student.
+- **Assignments** — teacher posts → student submits (text + file upload) → teacher grades with feedback.
+- **Parent portal** — parents self-sign-up and **claim their child** (verified, owner-approved), then see that child's attendance, marks, fees and assignments — and can pay online.
+- **Notice board** — announcements targeted by role and class.
+- **Real notifications** — email via Resend or SMTP, sent on fee payments and published results.
+- **Money** — live cash/bank balances, daily / monthly / yearly reports, expense tracking.
+- **Five roles** — owner, staff, teacher, student, parent — each with its own tailored views.
+- **Works on phones** — mobile-first responsive UI, installable as a **PWA** with an offline app shell.
+
+…on top of the AI and accountability layer below, which is what actually sets it apart.
+
+---
+
 ## What makes it different
 
 ### 1. Human-in-the-loop AI Assistant
 Ask in plain English — "add a student named Riya in class 5" or "who owes more than ₹20,000?". Claude proposes exact, named actions. Each appears as a reviewable card; you can skip individual ones, edit parameters inline, or apply all. Destructive actions get an extra confirmation.
 
 ### 2. Proactive AI Insights
-Every night at 2 AM (and on demand), I analyse school data and surface specific, actionable observations:
+Every night at 2 AM (and on demand), Sage analyses school data and surfaces specific, actionable observations:
 - Students with high dues and no payment in 60+ days
 - Expense spikes vs prior months
 - Fee collection rate by class
@@ -67,6 +88,23 @@ Every state-changing action (POST, PUT, DELETE, PATCH) is automatically logged w
 
 ### 5. Nightly Self-Diagnostics
 A scanner agent checks DB health, imports all agent modules, and optionally runs `ruff` lint. Findings are sent as owner notifications. On-demand runs available.
+
+---
+
+## How Sage compares to other school apps
+
+Tools like Fedena, Gibbon, OpenSIS or Teachmint cover the standard ground — records, attendance, fees, timetable, a parent portal. Sage covers that **same core**, and adds three things they generally don't:
+
+| | Typical school apps | Sage |
+|---|---|---|
+| Attendance · timetable · fees · marks · parent portal | ✅ | ✅ |
+| AI assistant that *proposes* actions and waits for approval | ❌ | ✅ |
+| Proactive nightly insights (dues, risk, expense spikes) | ❌ | ✅ |
+| Full, searchable audit trail of every change | partial | ✅ |
+| Excel ↔ app two-way sync sharing one save path | ⚠️ import-only | ✅ |
+| Self-hosted, no per-seat licensing, MIT-licensed | rare | ✅ |
+
+The honest version: if you only need a records-and-fees register, plenty of tools do that. Sage is for someone who wants that **plus** an AI co-pilot and a transparent, auditable system they own outright. It's not multi-school/SaaS tenancy, and a few extras (library, transport GPS, payroll) are intentionally out of scope.
 
 ---
 
@@ -124,19 +162,25 @@ The AI agent uses Claude's tool-use API — it never executes tools directly. It
 ```
 Sage/
 ├── backend/
-│   ├── agents/               # 17 domain agents (each = one FastAPI router)
-│   ├── tests/                # pytest suite — financial logic + risk scoring
-│   ├── main.py               # mounts all agents + middleware
+│   ├── agents/               # 21+ domain agents (each = one FastAPI router)
+│   ├── migrations/           # Alembic schema migrations
+│   ├── tests/                # pytest suite (86 tests)
+│   ├── main.py               # mounts agents under /api + serves the React build
 │   ├── models.py             # SQLAlchemy ORM
 │   ├── schemas.py            # Pydantic I/O schemas
 │   ├── auth.py               # JWT + bcrypt
-│   ├── seed_500.py           # 500-student realistic dataset
+│   ├── notifications.py      # email (Resend / SMTP)
+│   ├── excel_io.py           # .xlsx/.csv import + export
+│   ├── report_cards.py       # report-card PDF (fpdf2)
+│   ├── razorpay_client.py    # online payments
+│   ├── demo_seed.py          # optional sample data (SEED_DEMO=true)
 │   └── audit_middleware.py
 ├── frontend/
 │   └── src/
-│       ├── pages/            # One file per route
+│       ├── pages/            # one file per route
 │       └── components/
-├── run.py                    # One-line launcher (starts both servers)
+├── run.py                    # one-command launcher (starts both servers)
+├── Dockerfile                # single-service image (API + built UI)
 ├── docker-compose.yml
 └── .env.example
 ```

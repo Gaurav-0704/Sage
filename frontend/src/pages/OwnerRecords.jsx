@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { api, API_BASE } from "../api";
+import { api } from "../api";
 
 /**
  * Records — Owner-only.
