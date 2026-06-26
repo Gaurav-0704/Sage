@@ -62,6 +62,10 @@ export default function Login() {
           Staff: staff@sage.school / staff123<br/>
           Teachers / Students: see <code>tools/seed_demo.py</code> output
         </div>
+
+        <div style={{ textAlign: "center", marginTop: 16, fontSize: 11, color: "var(--text-3)" }}>
+          © 2026 Gaurav Singh Thakur
+        </div>
       </form>
     </div>
   );

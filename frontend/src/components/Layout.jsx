@@ -137,6 +137,10 @@ export default function Layout() {
                   style={{ padding: "8px 12px", fontSize: 12, minHeight: "auto" }}
                   onClick={handleLogout} title="Sign out">↩</button>
         </div>
+
+        <div style={{ padding: "10px 10px 2px", fontSize: 11, color: "var(--text-3)", textAlign: "center" }}>
+          © 2026 Gaurav Singh Thakur
+        </div>
       </aside>
 
       <main className="main">

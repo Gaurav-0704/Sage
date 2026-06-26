@@ -189,4 +189,4 @@ Sage/
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+© 2026 Gaurav Singh Thakur. Released under the MIT License — see [LICENSE](LICENSE).

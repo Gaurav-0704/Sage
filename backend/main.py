@@ -4,6 +4,8 @@ Sage — FastAPI gateway.
 I mount every agent, the audit middleware, CORS, and start the nightly
 scanner. Each agent owns one domain and lives in its own file so I can
 edit them independently without touching the others.
+
+Copyright (c) 2026 Gaurav Singh Thakur. MIT License.
 """
 
 import asyncio
